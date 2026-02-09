@@ -2,6 +2,8 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+
 async function battle(){
     var turns = 0;
     let charmander = { name: 'Charmander', hp: 70, dmg: 10};
@@ -21,6 +23,8 @@ async function battle(){
     }
 
     function attackAction(attacker, defender, finalDmg) {
+
+
         defender.hp -= finalDmg; 
         if (willGuard) {
         console.log(`${defender.name} had guarded against ${attacker.name}!`);
