@@ -35,8 +35,6 @@ async function battle(){
 
     }
 
-
-
     while (charmander.hp > 0 && rattata.hp > 0) {
 
     if (turns % 2 === 0) {
@@ -71,4 +69,5 @@ async function battle(){
     await sleep(2000);
     }
 
-} battle();
+} // battle();
+
