@@ -3,12 +3,13 @@
 class player {
     constructor(name) {
         this.name = name;
-        this.hp = 100;
+        this.hp = 300;
         this.dmg = 20;
         this.defense = 5;
         this.fumbles = 10;
         this.streak = 0;
         this.critChance = 0.1; // 10% chance for critical hit
+        this.dodgeChance = 0.05; // 5% chance to dodge an attack
     }   
     
     takeDamage(damage) {
@@ -23,7 +24,11 @@ class player {
     }
 
     criticalHit() {
-        return Math.random() < this.critChance ? 1.45 : 1; // returns +45% damage for critical hit, otherwise +0% damage
+        let isCritical = Math.random() < this.critChance;
+        if (isCritical) {
+            showDialogue(`${this.name} has landed a Critical hit!`);
+        }
+        return isCritical ? 1.45 : 1; // returns +45% damage for critical hit, otherwise +0% damage
     }
 
     attack(target) {
@@ -53,19 +58,31 @@ class player {
 }
 
 class enemy {
-    constructor(name, hp, dmg) {
+    constructor(name, hp, dmg, defense, critChance, dodgeChance) {
         this.name = name;
         this.hp = hp;
         this.dmg = dmg;
-        this.critChance = 0.15; // 15% chance for critical hit
+        this.defense = defense;
+        this.critChance = critChance;
+        this.dodgeChance = dodgeChance;
     }
     
     takeDamage(damage) {
-        this.hp -= damage;
-        console.log(`${this.name} takes ${damage} damage! HP left: ${this.hp}`);    
+        const actualDamage = Math.max(damage - this.defense, 0);
+        this.hp -= actualDamage;
+        console.log(`${this.name} takes ${actualDamage} damage! HP left: ${this.hp}`);
+
         if (this.hp <= 0) {
-            console.log(`${this.name} has fainted!`);
+            showDialogue(`${this.name} has fainted!`);
         }
+    }
+
+    criticalHit() {
+        let isCritical = Math.random() < this.critChance;
+        if (isCritical) {
+            showDialogue(`${this.name} has landed a Critical hit!`);
+        }
+        return isCritical ? 1.45 : 1; // returns +45% damage for critical hit, otherwise +0% damage
     }
 
     attack(target) {

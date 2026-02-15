@@ -1,3 +1,5 @@
+let turnCount = 0;
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -88,6 +90,15 @@ function categoryMultiplier(category) {
         default:
             return 1.0;
     }
+}
+
+function playerTurn() {
+    let turnCount = 0;
+    const maxTurns = 10; // Example: limit to 10 turns
+}
+
+function enemyTurn() {
+
 }
 
 function performedAction() {
