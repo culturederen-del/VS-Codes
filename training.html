@@ -6,19 +6,30 @@
     <title>Document</title>
 </head>
 <body>
-    <h1> This is example  why is it not working, oh it is working </h1>
+
+<div class="wordBox"></div>
+    <h1 id="userStats">User: </h1>
+    <h1 id="randomPairDisplay"></h1>
+    <h2 id="categoryDisplay"></h2>
     <input type="text" id="wordInput" placeholder="Enter a word">
-    <button onclick="fetchData()">Fetch Data</button>
+    <button id="wordSent">Confirm</button>
     <h1 id="output"> </h1>
+    <h1 id="wrongOutput"> </h1>
+    <h1 id="fumbleDisplay">Score: ${fumblePts}</h1>
+
+<div class="optionsUI" id="optUi"> 
+    <br>
+        <div id="dialogBox" style="display:none; border: 2px solid black; padding: 10px; width: 300px;">
+        <p id="dialogText"></p>
+        </div>
+    <button id="option1">Option 1</button>
+    <button id="option2">Option 2</button>
+    <button id="option3">Option 3</button>
+    
+</div>
 </body>
-<script src="training.js">
-    alert('This is mid af');
-</script>
-<script src="apitrain.js">
-    alert('This is api testing');
-</script>
-<script src="randword.js">
-    alert('This is random word');
-</script>
+<script src="training.js"></script>
+<script src="charStats.js"></script>
+<script src="randowrd.js"></script>
 </html>
 

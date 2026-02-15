@@ -2,9 +2,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
-
-async function battle(){
+async function batteru(){
     var turns = 0;
     let charmander = { name: 'Charmander', hp: 70, dmg: 10};
     let rattata = { name: 'Rattata', hp: 20, dmg: 5};
@@ -74,4 +72,50 @@ async function battle(){
     }
 
 } // battle();
+
+function categoryMultiplier(category) {
+    switch (category) {
+        case 'noun':
+            return 1.0;
+        case 'verb':
+            return 1.0;
+        case 'adjective':
+            return 0.9;
+        case 'adverb':
+            return 0.9;
+        case 'pronoun':
+            return 1.05;
+        default:
+            return 1.0;
+    }
+}
+
+function performedAction() {
+    const playerWord = document.getElementById('wordInput').value.trim();
+    const minLength = 3;
+    const maxLength = 9;
+    const minMeasure = 1.1;
+    const maxMeasure = 1.5;
+    if (playerWord.length > 7) {
+        minMeasure = 1.3;
+    } else if (playerWord.length > 5) {
+        minMeasure = 1.2;
+    }
+    const clampedLength = Math.max(minLength, Math.min(playerWord.length, maxLength));
+    const measure = minMeasure + ((clampedLength - minLength) / (maxLength - minLength)) * (maxMeasure - minMeasure);
+    const finalmeasure = measure * categoryMultiplier(currentCategory);
+    console.log(`The length of the word is: ${finalmeasure}`);
+    return finalmeasure;
+    
+}
+
+function Battle() {
+
+
+
+
+
+
+
+}
 
