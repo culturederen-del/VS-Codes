@@ -85,8 +85,6 @@ function categoryMultiplier(category) {
             return 0.9;
         case 'adverb':
             return 0.9;
-        case 'pronoun':
-            return 1.05;
         default:
             return 1.0;
     }
@@ -96,6 +94,7 @@ function playerTurn() {
     let turnCount = 0;
     const maxTurns = 10; // Example: limit to 10 turns
 }
+
 
 function enemyTurn() {
 

@@ -1,6 +1,10 @@
+// Global variables to manage game state
 let VALID_PAIRS = [];
 let currentRoundPair;
 let invalidWord = false;
+let selectedAffix = null;
+let pendingFinalWord = null;
+
 const user = new player("Player1"); 
 const category = ["noun", "adjective", "verb", "adverb", "pronoun"];
 const nounBtn = document.getElementById('nounBtn');
@@ -8,6 +12,18 @@ const verbBtn = document.getElementById('verbBtn');
 const adjBtn = document.getElementById('adjBtn');
 const advBtn = document.getElementById('advBtn');
 const prnBtn = document.getElementById('PrnBtn');
+const prefix = document.getElementById('PhysOpt');
+const infix = document.getElementById('MentOpt');
+const suffix = document.getElementById('AstralOpt');
+const optfixes = document.getElementById("optButtons");
+const inputBox = document.getElementById('inputSection');
+
+const outputElement = document.getElementById('output');
+const randPairDis = document.getElementById('randomPairDisplay');
+const categoryDisplay = document.getElementById('categoryDisplay');
+const fumbleOutput = document.getElementById('fumbleDisplay');
+
+
 
 function showDialogue(message) {
   const dialogBox = document.getElementById('dialogBox');
@@ -25,6 +41,7 @@ function showDialogue(message) {
   document.addEventListener('keydown', closeDialogue);
 }
 
+
 let isValidCategory = false;
 
 function getPartsOfSpeech(data) {
@@ -37,7 +54,7 @@ function getRandomPair() {
     if (VALID_PAIRS.length === 0) return null; // no pairs left
     const randomIndex = Math.floor(Math.random() * VALID_PAIRS.length);
     const pair = VALID_PAIRS[randomIndex];
-    // Remove it so we don’t pick the same one again
+    // Removes it so we don’t pick the same one again
     VALID_PAIRS.splice(randomIndex, 1);
     return pair;
 }
@@ -77,11 +94,6 @@ function setupCategory(category) {
           "RE","UP","ON","OUT","OV",
           "AL","BE");
       break;
-    case "pronoun":
-        VALID_PAIRS.push(
-          "PR","UN","IN",
-          "HE","SH","IT","TH","WE");
-      break;
     case "general":
             VALID_PAIRS.push(
           "ST","TR","BR","CR","DR","FR","GR","PR",
@@ -114,10 +126,7 @@ function nextPair() {
     randPairDis.textContent = `${currentRoundPair} is your current pair!`;
 }
 
-const outputElement = document.getElementById('output');
-const randPairDis = document.getElementById('randomPairDisplay');
-const categoryDisplay = document.getElementById('categoryDisplay');
-const fumbleOutput = document.getElementById('fumbleDisplay');
+
 
 function startGame(category) {
     currentCategory = category;
@@ -130,42 +139,129 @@ nounBtn.addEventListener("click", () => startGame("noun"));
 verbBtn.addEventListener("click", () => startGame("verb"));
 adjBtn.addEventListener("click", () => startGame("adjective"));
 advBtn.addEventListener("click", () => startGame("adverb"));
-prnBtn.addEventListener("click", () => startGame("pronoun"));
+
+function cleanUserInput(input, pair, affixType) {
+    let cleanInput = input.toUpperCase();
+
+    switch (affixType) {
+        case 'PhysOpt': // prefix → remove at start
+            if (cleanInput.startsWith(pair)) cleanInput = cleanInput.slice(pair.length);
+            break;
+        case 'AstralOpt': // suffix → remove at end
+            if (cleanInput.endsWith(pair)) cleanInput = cleanInput.slice(0, -pair.length);
+            break;
+        case 'MentOpt': // infix → don't remove anything
+            // leave the word as-is; user must include the pair
+            break;
+    }
+
+    return cleanInput;
+}
+
+
 
 // fumbleOutput.textContent = `You have ${user.fumbles} fumbles left.`;
 
+
+/* This entire 2 blocks below (until 'fetchData') is the event listener for the submit button which
+   validates the inputted word's syntax, 
+   checks if it matches the current category and the affixes, 
+   and then advances the game state accordingly.
+*/
+
+// makes it so that affix conditional is done and a button event listener checker: validates affix choice and then calls fetchData to validate the word itself
+
+optfixes.addEventListener("click", (event) => {
+    const btn = event.target.closest("button");
+    if (!btn) return;
+    selectedAffix = btn.id;   // store affix
+    document.getElementById('wordInput').disabled = false; // now user can type
+    outputElement.textContent = `Affix selected: ${btn.textContent}. Now enter your word.`; 
+    if (btn.id) { 
+    inputBox.style.opacity = 1; // visually indicate input is disabled until affix is chosen
+   } 
+});
+
+
 document.getElementById('wordSent').addEventListener('click', async () => {
-    let wordInput = document.getElementById('wordInput').value.trim().toUpperCase();
+    let wordInput = document.getElementById('wordInput').value.trim();
 
     if (!currentCategory || !currentRoundPair) {
         showDialogue("Please select a category to start the game!");
         return;
     }
 
+    if (!selectedAffix) { outputElement.textContent = "Please select an affix first!"; return; }
+
     if (!wordInput) {
         outputElement.textContent = 'Please enter a word!';
         return;
     }
 
-    if (!/^[A-Za-z]+$/.test(wordInput)) {
+    if (!/^[A-Z]+$/i.test(wordInput)) {
         outputElement.textContent = "Please enter letters only!";
         return;
     }
 
-    if (wordInput.startsWith(currentRoundPair)) {
-        wordInput = wordInput.slice(2);
-    }
-
-    const finalWord = currentRoundPair + wordInput;
-
-    if (finalWord.length < 3) {
-        outputElement.textContent = `${finalWord.toUpperCase()} is too short!`;
+    if (wordInput.length < 1) {
+        outputElement.textContent = "Word is too short!";
         return;
     }
 
-    // Only validate the word
-    await fetchData(wordInput, finalWord);
+    // Clean user input to prevent doubling
+      pendingFinalWord = cleanUserInput(wordInput, currentRoundPair, selectedAffix);
+
+    outputElement.textContent = "Now choose an affix type: prefix, infix, or suffix.";
+    let finalWord;
+
+    switch (selectedAffix) {
+        case 'PhysOpt': // prefix → add pair at start
+            finalWord = currentRoundPair + pendingFinalWord;
+            break;
+        case 'MentOpt': // infix → user must have typed it
+            finalWord = pendingFinalWord;
+            break;
+        case 'AstralOpt': // suffix → add pair at end
+            finalWord = pendingFinalWord + currentRoundPair;
+            break;
+    }
+    const optButtons = document.querySelectorAll('#optButtons button');
+    optButtons.forEach(btn => btn.disabled = true);  // disable all while validating
+    // ✅ Affix validation
+    let isValidAffix = false;
+    switch (selectedAffix) {
+        case 'PhysOpt': 
+            isValidAffix = finalWord.startsWith(currentRoundPair);
+            break;
+        case 'MentOpt':
+            isValidAffix = finalWord.includes(currentRoundPair) &&
+                           !finalWord.startsWith(currentRoundPair) &&
+                           !finalWord.endsWith(currentRoundPair);
+            break;
+        case 'AstralOpt': 
+            isValidAffix = finalWord.endsWith(currentRoundPair);
+            break;
+    }
+    document.getElementById('optButtons').disabled = false;
+    if (!isValidAffix) {
+        outputElement.textContent = `${finalWord} does not match the selected affix!`;
+        return;
+    }
+    optButtons.forEach(btn => btn.disabled = false);  // re-enabled after validation
+
+    // ✅ Validate final word via API
+    await fetchData(pendingFinalWord, finalWord);
+
+    // Reset for next round
+    pendingFinalWord = null;
+    selectedAffix = null;
+    document.getElementById('wordInput').value = "";
+
+    document.getElementById('wordInput').disabled = true; // optional
 });
+
+
+
 
 async function fetchData(wordInput, finalWord) {
   try {

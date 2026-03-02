@@ -39,6 +39,7 @@ class player {
     }
     
     
+    
     handleFumble(invalidWord) {
     if (invalidWord) {
         this.fumbles -= 1;
