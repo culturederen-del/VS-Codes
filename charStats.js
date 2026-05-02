@@ -8,7 +8,7 @@ class player {
         this.defense = 5;
         this.fumbles = 10;
         this.streak = 0;
-        this.critChance = 0.1; // 10% chance for critical hit
+        this.critChance = 0.15; // 15% chance for critical hit
         this.dodgeChance = 0.05; // 5% chance to dodge an attack
     }   
     
@@ -59,13 +59,15 @@ class player {
 }
 
 class enemy {
-    constructor(name, hp, dmg, defense, critChance, dodgeChance) {
-        this.name = name;
-        this.hp = hp;
-        this.dmg = dmg;
-        this.defense = defense;
-        this.critChance = critChance;
-        this.dodgeChance = dodgeChance;
+    constructor() {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        const chosenEnemy = characters[randomIndex];
+        this.name = chosenEnemy.name;
+        this.hp = chosenEnemy.hp;
+        this.dmg = chosenEnemy.dmg;
+        this.defense = chosenEnemy.defense;
+        this.critChance = chosenEnemy.critChance;
+        this.dodgeChance = chosenEnemy.dodgeChance;
     }
     
     takeDamage(damage) {
@@ -91,4 +93,12 @@ class enemy {
         target.takeDamage(this.dmg);
     }
 
+}
+
+function testingRound() {
+    let testPlayer = new player("Test Player");
+    let testEnemy = new enemy();
+    console.log(`You are facing ${testEnemy.name}!`);
+    testPlayer.attack(testEnemy);
+    testEnemy.attack(testPlayer);
 }

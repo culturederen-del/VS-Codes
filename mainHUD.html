@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="gamemode1.css">
+    <link rel="stylesheet" href="mainHUD.css">  <!-- ✅ FIXED: link not script -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Scripts -->
+    <script src="menu-categories.js" defer></script>
+    <script src="enemies.js" defer></script>
+    <script src="UI-Functions.js" defer></script>
+    <script src="mainHUD.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="fireworks.js" defer></script>
+</head>
+
+<body>
+<div class="mainHUDnav">
+<a href="" class="mainNavBtn" id="playBtn"><span>PLAY</span></a>
+<a href="" class="mainNavBtn"><span>SETTINGS</span></a>
+<a href="" class="mainNavBtn"><span>CREDITS</span></a>
+<a href="" class="mainNavBtn"><span>EXIT</span></a>
+</div>
+
+<div class="catSubMenu" id="subMenu">
+    <div class="catChoose">
+       <!-- <h1 id="catChooseText">Choose a category and select what move type it is:</h1> -->
+       <div class="whole">
+         <div class="img-wrapper"> 
+            <img class ="defaultImg" src="imgRes/Nouns.png">
+            </div>      
+         <button class="nounAnim" id="nounBtn">Noun</button>
+       </div>
+       <div class="whole">
+         <div class="img-wrapper"> 
+            <img class ="defaultImg" src="imgRes/Verbs.png">
+         </div>      
+         <button class="verbAnim" id="verbBtn">Verb</button>
+       </div>
+        <div class="whole">
+         <div class="img-wrapper"> 
+            <img class ="defaultImg" src="imgRes/Adjective.png">
+            </div>  
+            <button class="adjAnim" id="adjBtn">Adjective</button>
+        </div>
+        <div class="whole">
+            <div class="img-wrapper"> 
+            <img class ="defaultImg" src="imgRes/Adverbs.png">
+            </div>    
+            <button class="advAnim" id="advBtn">Adverb</button>
+        </div>
+        <div class="whole">
+            <div class="img-wrapper"> 
+            <img class ="defaultImg" src="imgRes/Pronoun.png">
+            </div> 
+            <button class="prnAnim" id="PrnBtn">Pronoun</button>       
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

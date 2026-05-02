@@ -4,46 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <link rel="stylesheet" href="gamemode1.css">
+<script src="training.js" defer></script>
+<script src="charStats.js" defer></script>
+<script src="randowrd.js" defer></script>  <!-- Loads first -->
+<script src="enemies.js" defer></script>
+<script src="UI-Functions.js" defer></script>
+
 </head>
 <body>
-
-<div class="catChoose">
-    <h1 id="catChooseText">Choose a category and select what move type it is:</h1>
-    <button class="catButton" id="nounBtn">Noun</button>
-    <button class="catButton" id="verbBtn">Verb</button>
-    <button class="catButton" id="adjBtn">Adjective</button>
-    <button class="catButton" id="advBtn">Adverb</button>
+<div class="mainHUDnav" style="border:rgb(31, 31, 31) solid 2px; border-radius: 3px; padding: 10px; margin-bottom: 1rem;">
+    <a href="mainHUD.html">Go Back</a>
+    <br> <br>
 </div>
 
-<div class="wordBox"></div>
     <h1 id="userStats">User: Placeholder <br> Health: 200 <br> </h1>
+    <div id="timeElapsed"></div>
+<div class="wordBox"></div>
     <h1 id="randomPairDisplay"></h1>
     <h2 id="categoryDisplay"></h2>
     <div id="inputSection" style="opacity:0; transition: opacity 0.5s; background-color: white;">
         <input type="text" id="wordInput" placeholder="Enter a word">
         <button id="wordSent">Confirm</button>
     </div>
-
+</div>
     <h1 id="fumbleDisplay"></h1>
 
-<div class="optionsUI" id="optUi" style ="border: 2px solid black; border-radius: 3px; margin-top: 15rem;"> 
+<div class="optionsUI" id="optUi" style ="border: 2px solid rgb(14, 143, 202); border-radius: 3px; margin-top: 15rem;"> 
     <br>
         <h1 id="output"> </h1>
         <div id="wrongOutput"></div>
         <div id="dialogBox" style="display:none; border: 2px solid black; padding: 10px; width: 300px;">
         <p id="dialogText"></p>
         </div>
-    <div id="optButtons">
-    <button id="PhysOpt">Physical</button>
-    <button id="MentOpt">Mental</button>
-    <button id="AstralOpt">Astral</button>
+    
+    <div id="mainOpt">
+        <div id ="actionDisplay">
+        <button id="attackOpt">Attack</button>
+        <button id="defendOpt">Defend</button>
+        <button id="itemOpt">Item</button>
+        <button id="runOpt">Run</button>
+        </div>
+        <div id="optButtons" class="hidden">
+        <button id="PhysOpt">Prefix</button>
+        <button id="MentOpt">Infix</button> 
+        <button id="AstralOpt">Suffix</button>
+        <button id="optClose">Close</button>
+        </div>
     </div>
     
 </div>
 </body>
-<script src="training.js"></script>
-<script src="charStats.js"></script>
-<script src="randowrd.js"></script>
-<script src="enemies.js"></script>
 </html>
 

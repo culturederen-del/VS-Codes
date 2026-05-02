@@ -1,8 +1,98 @@
 let turnCount = 0;
+class fumblingSystem {
+ constructor() {
+    this.fumbles = 7;
+    this.streak = 0;
+ }
+    #streakBonus() {
+        this.streak++;
+        if (this.streak > 0) {
+            const bonus = Math.min(this.streak * 0.05, 0.5);
+            console.log(`Current streak: ${this.streak}, Bonus multiplier: ${bonus}`);
+            return 1 + bonus;
+            }   
+    };
+    
+    validCounter() {
+        if (this.fumbles < 7) {
+        this.streak += 1;
+        } else {
+        showDialogue("You cannot gain streak points while at max fumbles!");
+        }
+        
+        if (this.streak > 5) {
+            showDialogue("Streak reached 5! Rewarding extra fumble point.");
+            this.fumbles += 1; // reward player with extra fumble point for reaching streak of 5
+        }
+    }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    validReset() {
+        console.log(`Fumble! Streak of ${this.streak} ended.`);
+        this.streak = 0; // reset streak on fumble
+    }
 }
+
+const fumbler = new fumblingSystem();
+class gm1Timer{
+ constructor(display, duration = 15, onTimeout = () => {}) {
+    this.display = display;
+    this.duration = duration;
+    this.onTimeout = onTimeout;
+    this.timeleft = duration;
+    this.interval = null;
+    this.isRunning = false;
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.interval = setInterval(() => {
+      this.timeleft--;
+      this.#updateDisplay();
+      console.log(`Time left: ${this.timeleft}s`); // Debug log
+      if (this.timeleft <= 0) {
+        this.#stop();
+        this.onTimeout();
+      }
+    }, 1000);
+    }
+
+    #stop() {
+        this.isRunning = false;
+        if (this.interval) clearInterval(this.interval);  
+    }
+
+    #updateDisplay() {
+        const secs = this.timeleft % 60;
+        this.display.textContent = `Time left: ${secs}s`;
+                if (this.timeleft <= 10) {
+            this.display.style.color = 'red'; // Change to red when time is low  
+            this.display.style.fontsize = '1.5em'; // font size
+            this.display.style.fontWeight = 'bold'; //  bold for emphasis 
+        }
+    }
+
+    getTimeLeft() {
+        return this.timeleft;
+    }
+    
+    pause() {
+        if (!this.isRunning) return;
+        this.#stop();
+    }
+
+    reset(duration = this.duration) {
+        this.#stop();
+        this.timeleft = this.duration;
+        this.#updateDisplay();
+    }
+}
+
+  const gameTime = new gm1Timer(document.getElementById('timeElapsed'), 40, () => {
+    showDialogue("Time's up! You lose the battle!");
+    validReset(); // Reset streak on timeout
+});
+
 
 async function batteru(){
     var turns = 0;
@@ -90,16 +180,6 @@ function categoryMultiplier(category) {
     }
 }
 
-function playerTurn() {
-    let turnCount = 0;
-    const maxTurns = 10; // Example: limit to 10 turns
-}
-
-
-function enemyTurn() {
-
-}
-
 function performedAction() {
     const playerWord = document.getElementById('wordInput').value.trim();
     const minLength = 3;
@@ -120,12 +200,6 @@ function performedAction() {
 }
 
 function Battle() {
-
-
-
-
-
-
 
 }
 

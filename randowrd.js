@@ -1,316 +1,211 @@
-// Global variables to manage game state
-let VALID_PAIRS = [];
-let currentRoundPair;
-let invalidWord = false;
-let selectedAffix = null;
-let pendingFinalWord = null;
+// randowrd.js - FIXED: No redeclaration errors
+// Use 'const' globals + check if already defined
 
-const user = new player("Player1"); 
-const category = ["noun", "adjective", "verb", "adverb", "pronoun"];
-const nounBtn = document.getElementById('nounBtn');
-const verbBtn = document.getElementById('verbBtn');
-const adjBtn = document.getElementById('adjBtn');
-const advBtn = document.getElementById('advBtn');
-const prnBtn = document.getElementById('PrnBtn');
-const prefix = document.getElementById('PhysOpt');
-const infix = document.getElementById('MentOpt');
-const suffix = document.getElementById('AstralOpt');
-const optfixes = document.getElementById("optButtons");
+// Only define if not already defined
+if (typeof VALID_PAIRS === 'undefined') {
+    window.VALID_PAIRS = [];
+    window.currentRoundPair = null;
+    window.currentCategory = null;
+    window.selectedAffix = null;
+    window.pendingFinalWord = null;
+    window.gameState = 'selectCategory';
+    
+    // Player class (only once)
+    if (typeof window.player === 'undefined') {
+        window.player = class {
+            constructor(name) {
+                this.name = name;
+                this.fumbles = 3;
+            }
+            handleFumble(invalid) {
+                if (invalid) this.fumbles--;
+            }
+        };
+    }
+    
+    window.user = new window.player("Player1");
+}
+
+// Game utilities (safe)
+window.gameTime = window.gameTime || { reset: () => {}, start: () => {} };
+window.fumbler = window.fumbler || { validCounter: () => {} };
+
+// DOM elements (safe)
 const inputBox = document.getElementById('inputSection');
-
 const outputElement = document.getElementById('output');
 const randPairDis = document.getElementById('randomPairDisplay');
 const categoryDisplay = document.getElementById('categoryDisplay');
 const fumbleOutput = document.getElementById('fumbleDisplay');
 
-
-
 function showDialogue(message) {
-  const dialogBox = document.getElementById('dialogBox');
-  const dialogText = document.getElementById('dialogText');
-
-  dialogText.textContent = message;
-  dialogBox.style.display = 'block';
-
-  // Set up a one-time keypress listener
-  function closeDialogue() {
-    dialogBox.style.display = 'none';
-    document.removeEventListener('keydown', closeDialogue); // remove listener
-  }
-
-  document.addEventListener('keydown', closeDialogue);
+    const dialogBox = document.getElementById('dialogBox');
+    const dialogText = document.getElementById('dialogText');
+    if (!dialogBox || !dialogText) return;
+    dialogText.textContent = message;
+    dialogBox.style.display = 'block';
+    const closeIt = () => {
+        dialogBox.style.display = 'none';
+        document.removeEventListener('keydown', closeIt);
+    };
+    document.addEventListener('keydown', closeIt);
 }
 
-
-let isValidCategory = false;
-
 function getPartsOfSpeech(data) {
-  return data.flatMap(entry =>
-    entry.meanings.map(m => m.partOfSpeech)
-  );
+    return data.flatMap(entry => entry.meanings.map(m => m.partOfSpeech));
 }
 
 function getRandomPair() {
-    if (VALID_PAIRS.length === 0) return null; // no pairs left
-    const randomIndex = Math.floor(Math.random() * VALID_PAIRS.length);
-    const pair = VALID_PAIRS[randomIndex];
-    // Removes it so we don’t pick the same one again
-    VALID_PAIRS.splice(randomIndex, 1);
+    if (window.VALID_PAIRS.length === 0) return null;
+    const idx = Math.floor(Math.random() * window.VALID_PAIRS.length);
+    const pair = window.VALID_PAIRS[idx];
+    window.VALID_PAIRS.splice(idx, 1);
     return pair;
 }
 
 function setupCategory(category) {
-  VALID_PAIRS.length = 0; // Clear previous pairs
-
-  switch (category) {
-    case "noun":
-        VALID_PAIRS.push(
-          "AN","EN","IN","ON","UN",
-          "BA","BE","BO","CA","CO",
-          "DE","DO","FA","FO","GA",
-          "GO","HA","HE","HI","HO",
-          "LA","LE","LO","MA","ME",
-          "MI","MO","NA","NE","NO",
-          "PA","PE","PO","RA","RE",
-          "RO","SA","SE","SO","TA",
-          "TE","TO");
-      break;
-    case "adjective":
-        VALID_PAIRS.push(
-          "AD","ED",
-          "BE","CO","DE","EX","IM",
-          "IN","IR","OB","RE","SE",
-          "UN");
-      break;
-    case "verb":
-        VALID_PAIRS.push(
-          "RE","UN","IN",
-          "AD","BE","DE","EN","EX",
-          "IM","OB","UP","ON","OUT");
-      break;
-    case "adverb":
-        VALID_PAIRS.push(
-          "AD","ED","IN","UN",
-          "RE","UP","ON","OUT","OV",
-          "AL","BE");
-      break;
-    case "general":
-            VALID_PAIRS.push(
-          "ST","TR","BR","CR","DR","FR","GR","PR",
-          "BL","CL","FL","GL","PL","SL",
-          "SP","SK","SM","SN","SW","TH","SH",
-          "CH","PH","WH","SC","QU","KN","WR","TW");
-      break;  // Added break for clarity
-    default:
-      break;
-  }
-
-  currentRoundPair = getRandomPair();
+    window.VALID_PAIRS.length = 0;
+    const pairs = {
+        noun: ["AN","EN","IN","ON","UN","BA","BE","BO","CA","CO","DE","DO","FA","FO","GA","GO","HA","HE","HI","HO","LA","LE","LO","MA","ME","MI","MO","NA","NE","NO","PA","PE","PO","RA","RE","RO","SA","SE","SO","TA","TE","TO"],
+        adjective: ["AD","ED","BE","CO","DE","EX","IM","IN","IR","OB","RE","SE","UN"],
+        verb: ["RE","UN","IN","AD","BE","DE","EN","EX","IM","OB","UP","ON","OUT"],
+        adverb: ["AD","ED","IN","UN","RE","UP","ON","OUT","OV","AL","BE"],
+        pronoun: ["HE","HI","IT","ME","MY","WE","US","YOU","THEY","THEM"]
+    };
+    window.VALID_PAIRS.push(...(pairs[category] || []));
+    window.currentRoundPair = getRandomPair();
 }
 
 function nextPair() {
-    // Refill if empty
-    if (VALID_PAIRS.length === 0) {
-        setupCategory(currentCategory); // refill VALID_PAIRS
-        showDialogue("You've gone through all the pairs! Pairs has been reset.");
+    if (window.VALID_PAIRS.length === 0) {
+        setupCategory(window.currentCategory);
+        showDialogue("All pairs used! Reset complete.");
     }
-
-    // Pick the next random pair
     const newPair = getRandomPair();
-
     if (!newPair) {
-        randPairDis.textContent = "No pairs available!";
+        if (randPairDis) randPairDis.textContent = "No pairs left!";
         return;
     }
-    currentRoundPair = newPair;
-    randPairDis.textContent = `${currentRoundPair} is your current pair!`;
+    window.currentRoundPair = newPair;
+    if (randPairDis) randPairDis.textContent = `"${newPair}" is your pair!`;
+    gameTime.start();
 }
 
-
-
-function startGame(category) {
-    currentCategory = category;
-    setupCategory(category);
-    nextPair(); // set first pair
-    categoryDisplay.textContent = `Current category: ${currentCategory}`;
+function validReset() {
+    const wordInput = document.getElementById('wordInput');
+    if (wordInput) {
+        wordInput.value = "";
+        wordInput.focus();
+    }
+    window.selectedAffix = null;
+    window.pendingFinalWord = null;
+    window.gameState = 'selectAffix';
 }
-
-nounBtn.addEventListener("click", () => startGame("noun"));
-verbBtn.addEventListener("click", () => startGame("verb"));
-adjBtn.addEventListener("click", () => startGame("adjective"));
-advBtn.addEventListener("click", () => startGame("adverb"));
 
 function cleanUserInput(input, pair, affixType) {
     let cleanInput = input.toUpperCase();
-
     switch (affixType) {
-        case 'PhysOpt': // prefix → remove at start
-            if (cleanInput.startsWith(pair)) cleanInput = cleanInput.slice(pair.length);
-            break;
-        case 'AstralOpt': // suffix → remove at end
-            if (cleanInput.endsWith(pair)) cleanInput = cleanInput.slice(0, -pair.length);
-            break;
-        case 'MentOpt': // infix → don't remove anything
-            // leave the word as-is; user must include the pair
-            break;
+        case 'PhysOpt': if (cleanInput.startsWith(pair)) cleanInput = cleanInput.slice(pair.length); break;
+        case 'AstralOpt': if (cleanInput.endsWith(pair)) cleanInput = cleanInput.slice(0, -pair.length); break;
     }
-
     return cleanInput;
 }
 
-
-
-// fumbleOutput.textContent = `You have ${user.fumbles} fumbles left.`;
-
-
-/* This entire 2 blocks below (until 'fetchData') is the event listener for the submit button which
-   validates the inputted word's syntax, 
-   checks if it matches the current category and the affixes, 
-   and then advances the game state accordingly.
-*/
-
-// makes it so that affix conditional is done and a button event listener checker: validates affix choice and then calls fetchData to validate the word itself
-
-optfixes.addEventListener("click", (event) => {
-    const btn = event.target.closest("button");
-    if (!btn) return;
-    selectedAffix = btn.id;   // store affix
-    document.getElementById('wordInput').disabled = false; // now user can type
-    outputElement.textContent = `Affix selected: ${btn.textContent}. Now enter your word.`; 
-    if (btn.id) { 
-    inputBox.style.opacity = 1; // visually indicate input is disabled until affix is chosen
-   } 
-});
-
-
-document.getElementById('wordSent').addEventListener('click', async () => {
-    let wordInput = document.getElementById('wordInput').value.trim();
-
-    if (!currentCategory || !currentRoundPair) {
-        showDialogue("Please select a category to start the game!");
+// 🔥 MAIN GAME LOGIC - Submit handler
+document.addEventListener('click', async (e) => {
+    if (e.target.id !== 'wordSent') return;
+    
+    const wordInput = document.getElementById('wordInput');
+    const wordValue = wordInput?.value?.trim().toUpperCase();
+    
+    if (!window.currentCategory || !window.currentRoundPair) {
+        showDialogue("Select category from menu first!");
+        return;
+    }
+    if (!window.selectedAffix) {
+        if (outputElement) outputElement.textContent = "Select affix via ATTACK first!";
+        return;
+    }
+    if (!wordValue || !/^[A-Z]+$/.test(wordValue) || wordValue.length < 3) {
+        if (outputElement) outputElement.textContent = "Enter valid word (3+ letters)!";
         return;
     }
 
-    if (!selectedAffix) { outputElement.textContent = "Please select an affix first!"; return; }
-
-    if (!wordInput) {
-        outputElement.textContent = 'Please enter a word!';
-        return;
-    }
-
-    if (!/^[A-Z]+$/i.test(wordInput)) {
-        outputElement.textContent = "Please enter letters only!";
-        return;
-    }
-
-    if (wordInput.length < 1) {
-        outputElement.textContent = "Word is too short!";
-        return;
-    }
-
-    // Clean user input to prevent doubling
-      pendingFinalWord = cleanUserInput(wordInput, currentRoundPair, selectedAffix);
-
-    outputElement.textContent = "Now choose an affix type: prefix, infix, or suffix.";
     let finalWord;
-
-    switch (selectedAffix) {
-        case 'PhysOpt': // prefix → add pair at start
-            finalWord = currentRoundPair + pendingFinalWord;
+    switch (window.selectedAffix) {
+        case 'PhysOpt': finalWord = window.currentRoundPair + cleanUserInput(wordValue, window.currentRoundPair, window.selectedAffix); break;
+        case 'MentOpt': 
+            if (!wordValue.includes(window.currentRoundPair)) {
+                if (outputElement) outputElement.textContent = `Infix needs "${window.currentRoundPair}" INSIDE!`;
+                return;
+            }
+            finalWord = wordValue; 
             break;
-        case 'MentOpt': // infix → user must have typed it
-            finalWord = pendingFinalWord;
-            break;
-        case 'AstralOpt': // suffix → add pair at end
-            finalWord = pendingFinalWord + currentRoundPair;
-            break;
+        case 'AstralOpt': finalWord = cleanUserInput(wordValue, window.currentRoundPair, window.selectedAffix) + window.currentRoundPair; break;
+        default: if (outputElement) outputElement.textContent = "Invalid affix!"; return;
     }
-    const optButtons = document.querySelectorAll('#optButtons button');
-    optButtons.forEach(btn => btn.disabled = true);  // disable all while validating
-    // ✅ Affix validation
-    let isValidAffix = false;
-    switch (selectedAffix) {
-        case 'PhysOpt': 
-            isValidAffix = finalWord.startsWith(currentRoundPair);
-            break;
-        case 'MentOpt':
-            isValidAffix = finalWord.includes(currentRoundPair) &&
-                           !finalWord.startsWith(currentRoundPair) &&
-                           !finalWord.endsWith(currentRoundPair);
-            break;
-        case 'AstralOpt': 
-            isValidAffix = finalWord.endsWith(currentRoundPair);
-            break;
+
+    if (outputElement) outputElement.textContent = `Checking "${finalWord}"...`;
+    if (wordInput) wordInput.disabled = true;
+
+    try {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${finalWord}`);
+        if (!response.ok) {
+            if (outputElement) outputElement.textContent = `"${finalWord}" is not a real word!`;
+            window.user.handleFumble(true);
+            validReset();
+            if (wordInput) wordInput.disabled = false;
+            return;
+        }
+
+        const data = await response.json();
+        const partsOfSpeech = getPartsOfSpeech(data);
+        
+        if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Valid!`;
+        gameTime.pause();
+        gameTime.reset();
+        fumbler.validCounter();
+
+        const isCorrectCategory = partsOfSpeech.some(pos => 
+            pos.toLowerCase().includes(window.currentCategory.toLowerCase())
+        );
+
+        const categoryOutput = document.getElementById('categoryOutput');
+        if (categoryOutput) {
+            categoryOutput.textContent = isCorrectCategory 
+                ? `"${finalWord}" is perfect ${window.currentCategory}!`
+                : `"${finalWord}" valid - advancing!`;
+        }
+
+        nextPair();
+        validReset();
+        
+    } catch (error) {
+        console.error('API Error:', error);
+        if (outputElement) outputElement.textContent = 'Network error - retry!';
+        validReset();
+        if (wordInput) wordInput.disabled = false;
     }
-    document.getElementById('optButtons').disabled = false;
-    if (!isValidAffix) {
-        outputElement.textContent = `${finalWord} does not match the selected affix!`;
-        return;
-    }
-    optButtons.forEach(btn => btn.disabled = false);  // re-enabled after validation
-
-    // ✅ Validate final word via API
-    await fetchData(pendingFinalWord, finalWord);
-
-    // Reset for next round
-    pendingFinalWord = null;
-    selectedAffix = null;
-    document.getElementById('wordInput').value = "";
-
-    document.getElementById('wordInput').disabled = true; // optional
 });
 
-
-
-
-async function fetchData(wordInput, finalWord) {
-  try {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${finalWord}`);
-
-    if (!response.ok) {
-      outputElement.textContent = `${finalWord} is not a valid word!`;
-      invalidWord = true;
-      user.handleFumble(invalidWord);
-      const wrongOutput = document.getElementById('wrongOutput');
-      if (wrongOutput) {
-          wrongOutput.textContent = `Try again!`;
-      }
-      document.getElementById('wordInput').value = "";
-      document.getElementById('wordInput').focus();
-      return;
+// Initialize game from menu
+document.addEventListener('DOMContentLoaded', () => {
+    const savedCategory = sessionStorage.getItem('selectedCategory');
+    if (savedCategory) {
+        window.currentCategory = savedCategory;
+        setupCategory(savedCategory);
+        nextPair();
+        if (categoryDisplay) categoryDisplay.textContent = `Category: ${savedCategory}`;
+        if (outputElement) outputElement.textContent = 'ATTACK for affix options!';
+        sessionStorage.removeItem('selectedCategory');
+        console.log('Game started with:', savedCategory);
+        return;
     }
+    if (outputElement) outputElement.textContent = 'Select category from menu!';
+});
 
-    const data = await response.json();
-    outputElement.textContent = `${finalWord} is a valid word!`;
+// Fumble display
+setInterval(() => {
+    if (fumbleOutput) fumbleOutput.textContent = `Fumbles: ${window.user.fumbles}`;
+}, 1000);
 
-    const partsOfSpeech = getPartsOfSpeech(data);
-    console.log(`Word: ${finalWord}, POS from API: ${partsOfSpeech.join(', ')}, Current Category: ${currentCategory}`); // Debug log
-
-    // More lenient POS check: exact match or partial (e.g., "noun" matches "noun")
-    isValidCategory = partsOfSpeech.some(pos => pos.toLowerCase().includes(currentCategory.toLowerCase()));
-    if (isValidCategory) {
-        const categoryOutput = document.getElementById('categoryOutput');
-        if (categoryOutput) {
-            categoryOutput.textContent = `Great! ${finalWord} is a valid ${currentCategory}!`;
-        }
-        nextPair(); // Generate new pair
-        console.log(`Advanced to new pair: ${currentRoundPair}`); // Debug log
-    } 
-    else {
-        // If no exact match but word is valid, advance with a warning (handles API inconsistencies)
-        const categoryOutput = document.getElementById('categoryOutput');
-        if (categoryOutput) {
-            categoryOutput.textContent = `Almost! ${finalWord} is valid but POS unclear for ${currentCategory}. Advancing anyway! (POS: ${partsOfSpeech.join(', ')})`;
-        }
-        console.log(`POS mismatch, but advancing due to leniency`); // Debug log
-        nextPair(); // Still generate new pair to avoid sticking
-    }
-
-    // Clear input
-    document.getElementById('wordInput').value = "";
-    document.getElementById('wordInput').focus();
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+console.log('randowrd.js loaded');

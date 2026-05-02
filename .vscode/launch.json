@@ -5,6 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Example1",
+            "request": "launch",
+            "mainClass": "Example1",
+            "projectName": "VS Codes_64bcfa5c"
+        },
+        {
+            "type": "java",
+            "name": "CheckedExample",
+            "request": "launch",
+            "mainClass": "CheckedExample",
+            "projectName": "VS Codes_64bcfa5c"
+        },
+        {
+            "type": "java",
+            "name": "delete",
+            "request": "launch",
+            "mainClass": "delete",
+            "projectName": "VS Codes_64bcfa5c"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
