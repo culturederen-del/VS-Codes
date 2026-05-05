@@ -1,4 +1,4 @@
-// fireworks.js - FIXED: Works on ALL buttons + Allows category redirects
+/*
 (function() {
     'use strict';
 
@@ -17,10 +17,6 @@
         const particles = [];
         let animationId = null;
 
-        // [Keep ALL your existing functions unchanged]
-        // getCanvasCoords, setParticuleDirection, createParticule, createCircle, 
-        // easeOutExpo, animate, setCanvasSize...
-
         function getCanvasCoords(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.clientX || e.touches[0]?.clientX;
@@ -28,7 +24,6 @@
             return { x: clientX - rect.left, y: clientY - rect.top };
         }
 
-        // 🔥 FIXED: Fireworks on ALL buttons - NO event blocking!
         document.addEventListener('click', function(e) {
             // Trigger fireworks on ANY button click
             if (e.target.tagName === 'BUTTON') {
@@ -36,7 +31,7 @@
                 const coords = getCanvasCoords(e);
                 animateParticules(coords.x, coords.y);
             }
-        }, true); // Capture phase - fires BEFORE other handlers
+        }, true); 
 
         // Touch support (unchanged)
         canvas.addEventListener('touchstart', (e) => {
@@ -56,3 +51,5 @@
         initFireworks();
     }
 })();
+
+*/

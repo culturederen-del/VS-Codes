@@ -1,7 +1,10 @@
-// UI-Functions.js - Works with your HTML exactly as-is
+// UI-Functions.js - main game
 const optButtons = document.getElementById('optButtons');
 const attackOpt = document.getElementById('attackOpt');
 const optClose = document.getElementById('optClose');
+const gameOverPopup = document.querySelector('.gameOverPopUp');
+
+
 
 // Attack opens optButtons
 attackOpt.onclick = (e) => {
@@ -42,3 +45,9 @@ optfixes.addEventListener("click", (event) => {
     
     console.log('Affix set:', window.selectedAffix); // Debug
 });
+
+const upperDisplay = document.getElementById('upperGameDisplay');
+
+function showGameOutput() {
+        gameOutput.style.opacity = '1';
+    }

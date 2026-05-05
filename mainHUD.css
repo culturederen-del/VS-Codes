@@ -1,9 +1,16 @@
-
-@import url('https://fonts.googleapis.com/css?family=Quantico:400');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dongle&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+body, html{
+      font-family: "Dongle", sans-serif;
+      background-color: #92bfb1;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 
 body{
-      font-family: "Noto Sans", sans-serif;
-      background-color: #92bfb1;
+
+  overflow: hidden;
 }
 
 :root{
@@ -66,39 +73,82 @@ body{
   z-index: 1;
 }
 
+.nameContainer{
+  margin: 0px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: start;
+  position: relative;
+  z-index: 10;
+
+}
+
+.ep{
+  width: 70px;
+  height: 70px;
+  border-radius: 100%;
+  background-color: #868686;
+}
+
+.nameBox{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-bottom-left-radius: 30px;
+  background-color: aliceblue;
+  padding-left: 20px;
+  width: 350px;
+  height: 100px;
+}
+
+.nameTexts{
+  font-size: 30px ;
+
+}
+
+.nameInputs{
+  padding-bottom: 10px;
+}
+
+.gameTitle{
+  font-weight: bolder;
+  height: 150px;
+  font-size: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+  margin: 0;
+  color:aliceblue;
+}
+
 
 .mainHUDnav {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  width: 600px;
-  height: 500px;
-  padding: 0.1em;
-  margin-left: 2em;
-
-  border: #333 5px solid;
-
+  margin-left: 5em;
   position: absolute;
   top: 50%;
   left: 0;
   transform: translateY(-50%);
-
+  margin-top: 1.5em;
   align-items: stretch; 
 }
 
 .mainNavBtn {
+    border-radius: 30px;
+  width: 500px;
+  height: 120px;
+  background-color: aliceblue;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
-  width: 100%;             
+             
   box-sizing: border-box;   
-
   padding: 20px;           
   margin-bottom: 5px;
-
-  border: #333 1px solid;
 
   font-size: 80px;
   line-height: 1;
@@ -187,5 +237,299 @@ body{
   }
   100% {
     transform: scale(1.15) rotate(-7deg);
+  }
+}
+
+
+:root {
+  --color-bg1: rgb(108, 0, 162);
+  --color-bg2: rgb(0, 17, 82);
+  --color1: 18, 113, 255;
+  --color2: 221, 74, 255;
+  --color3: 100, 220, 255;
+  --color4: 200, 50, 50;
+  --color5: 180, 180, 50;
+  --color-interactive: 140, 100, 255;
+  --circle-size: 80%;
+  --blending: hard-light;
+}
+
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+}
+
+
+.gradient-bg {
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;  
+  inset: 0;
+  z-index: 0;      
+  overflow: hidden;
+  background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
+  top: 0;
+  left: 0;
+
+
+  svg {
+    position: fixed;
+    top:0;
+    left:0;
+    width: 0;
+    height: 0;
+  }
+
+
+  .gradients-container {
+    filter: url(#goo) blur(40px) ;
+    width: 100%;
+    height: 100%;
+  }
+
+  .g1 {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: var(--circle-size);
+    height: var(--circle-size);
+    top: calc(50% - var(--circle-size) / 2);
+    left: calc(50% - var(--circle-size) / 2);
+
+    transform-origin: center center;
+    animation: moveVertical 30s ease infinite;
+
+    opacity: 1;
+  }
+
+  .g2 {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: var(--circle-size);
+    height: var(--circle-size);
+    top: calc(50% - var(--circle-size) / 2);
+    left: calc(50% - var(--circle-size) / 2);
+
+    transform-origin: calc(50% - 400px);
+    animation: moveInCircle 20s reverse infinite;
+
+    opacity: 1;
+  }
+
+  .g3 {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: var(--circle-size);
+    height: var(--circle-size);
+    top: calc(50% - var(--circle-size) / 2 + 200px);
+    left: calc(50% - var(--circle-size) / 2 - 500px);
+
+    transform-origin: calc(50% + 400px);
+    animation: moveInCircle 40s linear infinite;
+
+    opacity: 1;
+  }
+
+  .g4 {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: var(--circle-size);
+    height: var(--circle-size);
+    top: calc(50% - var(--circle-size) / 2);
+    left: calc(50% - var(--circle-size) / 2);
+
+    transform-origin: calc(50% - 200px);
+    animation: moveHorizontal 40s ease infinite;
+
+    opacity: 0.7;
+  }
+
+  .g5 {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: calc(var(--circle-size) * 2);
+    height: calc(var(--circle-size) * 2);
+    top: calc(50% - var(--circle-size));
+    left: calc(50% - var(--circle-size));
+
+    transform-origin: calc(50% - 800px) calc(50% + 200px);
+    animation: moveInCircle 20s ease infinite;
+
+    opacity: 1;
+  }
+
+  .interactive {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.8) 0, rgba(var(--color-interactive), 0) 50%) no-repeat;
+    mix-blend-mode: var(--blending);
+
+    width: 100%;
+    height: 100%;
+    top: -50%;
+    left: -50%;
+
+    opacity: 0.7;
+  }
+}
+
+/* Title Animation */
+
+:root {
+  --char-total: 10;
+}
+
+.gradientMask{
+font-size: 70px;
+display:flex;
+  font-family: "Dongle", sans-serif;
+  z-index: 0;
+}
+
+
+.letterGroup{
+  display: inline-block;
+  z-index: -9;
+}
+
+.char{
+  color: black;
+  display: inline-block; 
+  opacity: 0;
+  animation: char-transform 1s ease-in-out forwards;
+  z-index: -1;
+  
+}
+
+.navContainer{
+  z-index: 99;
+}
+
+.first-char {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  opacity: 1;
+  color: white;
+  animation: first-char-transform 1.5s ease-in-out;
+
+}
+
+
+
+.char:nth-child(2) { animation-delay: 1.0s; }
+.char:nth-child(3) { animation-delay: 1.3s; }
+.char:nth-child(4) { animation-delay: 1.4s; }
+.char:nth-child(5) { animation-delay: 1.5s; }
+.char:nth-child(6) { animation-delay: 1.6s; }
+.char:nth-child(7) { animation-delay: 1.7s; }
+.char:nth-child(8) { animation-delay: 1.8s; }
+.char:nth-child(9) { animation-delay: 1.9s; }
+.char:nth-child(10) { animation-delay: 2s; }
+.char:nth-child(11) { animation-delay: 2.1s }
+
+@keyframes opacities {
+0% {
+  opacity: 0;
+}
+99% {
+  opacity: 0;
+}
+100% {
+  opacity: 1;
+}
+  
+}
+
+@keyframes first-char-rotate {
+  0% {
+    transform: rotate(-20deg); 
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  70% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes first-char-transform {
+  0% {
+    transform: translateX(calc(.75ch * var(--char-total))) translateY(80%);
+  }
+  40% {
+    transform: translateX(calc(.75ch * var(--char-total))) translateY(-10%);
+  }
+  60% {
+    transform: translateX(calc(.75ch * var(--char-total))) translateY(7%);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes char-rotate {
+  0% { transform: rotate(30deg); } 
+  30% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes char-transform {
+  0% { opacity: 0; color: white; transform: translateY(50%); }
+  70% {
+    opacity: 1;
+    color: white;
+    transform: translateY(-6%);
+  }
+  90% {
+    transform: translateY(1%); 
+  }
+  to {
+    opacity: 1;
+    color: white;
+    transform: translateY(0%);
   }
 }

@@ -9,21 +9,52 @@
 <script src="training.js" defer></script>
 <script src="charStats.js" defer></script>
 <script src="randowrd.js" defer></script>  <!-- Loads first -->
-<script src="enemies.js" defer></script>
+
 <script src="UI-Functions.js" defer></script>
 
 </head>
 <body>
+
 <div class="mainHUDnav" style="border:rgb(31, 31, 31) solid 2px; border-radius: 3px; padding: 10px; margin-bottom: 1rem;">
     <a href="mainHUD.html">Go Back</a>
-    <br> <br>
 </div>
 
-    <h1 id="userStats">User: Placeholder <br> Health: 200 <br> </h1>
-    <div id="timeElapsed"></div>
+
+
+<div id="upperGameDisplay" style="opacity:1">
+<div class="userStateHUD">
+    <div id="userStats"> 
+
+    </div>
+</div>
+<br><br>
+
+<div id="currentEnemyStateHud">
+hi
+</div>
+
+<div id="timeElapsed"></div>
 <div class="wordBox"></div>
     <h1 id="randomPairDisplay"></h1>
     <h2 id="categoryDisplay"></h2>
+
+</div>
+
+<div class="gameOverPopUp"> 
+    <div class="gameOverDisplay">
+        <div class="gameOverResponse">
+        <h1> Oops! You ran out of time </h1>
+        </div>
+         <div class="imgContainer"> 
+            <img class ="sadFace" src="imgRes/SadFaceFail.png">
+         </div>      
+        <h1> Your Score: 0000</h1>
+        <a href="mainHUD.html" class="gameOverReturn"> Go Back</a>
+    </div>
+
+</div>
+
+
     <div id="inputSection" style="opacity:0; transition: opacity 0.5s; background-color: white;">
         <input type="text" id="wordInput" placeholder="Enter a word">
         <button id="wordSent">Confirm</button>

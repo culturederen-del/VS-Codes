@@ -1,38 +1,50 @@
-let turnCount = 0;
 class fumblingSystem {
- constructor() {
-    this.fumbles = 7;
-    this.streak = 0;
- }
-    #streakBonus() {
-        this.streak++;
-        if (this.streak > 0) {
-            const bonus = Math.min(this.streak * 0.05, 0.5);
-            console.log(`Current streak: ${this.streak}, Bonus multiplier: ${bonus}`);
-            return 1 + bonus;
-            }   
-    };
-    
-    validCounter() {
-        if (this.fumbles < 7) {
-        this.streak += 1;
-        } else {
-        showDialogue("You cannot gain streak points while at max fumbles!");
-        }
-        
-        if (this.streak > 5) {
-            showDialogue("Streak reached 5! Rewarding extra fumble point.");
-            this.fumbles += 1; // reward player with extra fumble point for reaching streak of 5
+    constructor() {
+        this.fumbles = 3;
+        this.streak = 0;
+        this.lastRewardedStreak = 0; 
+    }
+
+    handleFumble(invalid) {
+        if (invalid) {
+            this.fumbles--;
+            this.validReset();
+            console.log(`Fumble! Remaining: ${this.fumbles}`);
         }
     }
 
+    addStreak() {
+        this.streak++;
+        if (this.streak >= 3 && this.lastRewardedStreak < 3) {
+            showDialogue("Streak reached 3! Rewarding extra fumble point.");
+            this.fumbles += 1;
+            this.lastRewardedStreak = 3; 
+        }
+    }
+
+    showFumbles(element) {
+        if (element) {
+            element.innerText = `Fumbles: ${this.fumbles}`;
+        }
+    }
+    
+    validCounter() {
+        if (this.fumbles < 5) {
+            this.addStreak();
+        } else {
+            showDialogue("You cannot gain streak points while at max fumbles!");
+        }
+        console.log(`Fumbles: ${this.fumbles}, Streak: ${this.streak}`);
+    }
+
     validReset() {
-        console.log(`Fumble! Streak of ${this.streak} ended.`);
-        this.streak = 0; // reset streak on fumble
+        console.log(`You Fumbled! Streak of ${this.streak} ended.`);
+        this.streak = 0;
     }
 }
 
 const fumbler = new fumblingSystem();
+
 class gm1Timer{
  constructor(display, duration = 15, onTimeout = () => {}) {
     this.display = display;
@@ -53,6 +65,7 @@ class gm1Timer{
       if (this.timeleft <= 0) {
         this.#stop();
         this.onTimeout();
+        round.gameOver();
       }
     }, 1000);
     }
@@ -181,25 +194,93 @@ function categoryMultiplier(category) {
 }
 
 function performedAction() {
-    const playerWord = document.getElementById('wordInput').value.trim();
+    const input = document.getElementById('wordInput');
+    if (!input) return 1;
+
+    const playerWord = input.value?.trim() || "";
+
+    if (playerWord.length === 0) return 1;
+
     const minLength = 3;
     const maxLength = 9;
-    const minMeasure = 1.1;
+
+    let minMeasure = 1.1;
     const maxMeasure = 1.5;
+
     if (playerWord.length > 7) {
         minMeasure = 1.3;
     } else if (playerWord.length > 5) {
         minMeasure = 1.2;
     }
+
     const clampedLength = Math.max(minLength, Math.min(playerWord.length, maxLength));
-    const measure = minMeasure + ((clampedLength - minLength) / (maxLength - minLength)) * (maxMeasure - minMeasure);
-    const finalmeasure = measure * categoryMultiplier(currentCategory);
-    console.log(`The length of the word is: ${finalmeasure}`);
-    return finalmeasure;
-    
+    const measure = minMeasure + 
+    ((clampedLength - minLength) / (maxLength - minLength)) * (maxMeasure - minMeasure);
+
+    const categoryMult = categoryMultiplier(currentCategory || "noun");
+
+    return measure * categoryMult;
 }
 
-function Battle() {
+class testingRound {
+    constructor() {
+    this.turnCount = 0;
+    this.isPlayerTurn = true;
+    this.roundCount = 0;
+    }
 
+    startFirstRound() {
+        this.roundCount++;
+        gameTime.start();
+        showGameOutput();
+        spawnEnemy();
+    }
+
+    playerAttacks(){
+        this.turnCount++;
+        if (!this.isPlayerTurn) return;
+        player.attack(currentEnemy);
+        this.isPlayerTurn = false
+
+        if (currentEnemy.hp > 0) {
+            this.enemyAttacks();
+        } else {
+            this.turnCount = 0;
+            showDialogue(`${currentEnemy} has fainted!`);
+            this.stageOver();
+            
+        }
+    }
+
+    enemyAttacks(){
+    currentEnemy.attack(player);
+    }
+
+    stageOver() {
+        showDialogue("Stage Over! Prepare for the next battle!");
+        this.turnCount = 0;
+    }
+
+    startNextTurn(){
+        // add a setting to display turns here
+        this.isPlayerTurn = true;
+        gameTime.reset();
+        gameTime.start();
+    }
+
+    startNextRound(){
+        this.roundCount++;
+        spawnEnemy(); // create an if statement for first/next round in randowrd
+        this.isPlayerTurn = true;
+        gameTime.reset();
+        gameTime.start();
+    }
+
+    gameOver(){
+    gameOverPopup.classList.add('active'); // see ui-func for call
+
+    }
 }
 
+
+const round = new testingRound();

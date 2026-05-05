@@ -1,41 +1,36 @@
-// randowrd.js - FIXED: No redeclaration errors
 // Use 'const' globals + check if already defined
-
 // Only define if not already defined
-if (typeof VALID_PAIRS === 'undefined') {
-    window.VALID_PAIRS = [];
-    window.currentRoundPair = null;
-    window.currentCategory = null;
-    window.selectedAffix = null;
-    window.pendingFinalWord = null;
-    window.gameState = 'selectCategory';
-    
-    // Player class (only once)
-    if (typeof window.player === 'undefined') {
-        window.player = class {
-            constructor(name) {
-                this.name = name;
-                this.fumbles = 3;
-            }
-            handleFumble(invalid) {
-                if (invalid) this.fumbles--;
-            }
-        };
-    }
-    
-    window.user = new window.player("Player1");
-}
 
-// Game utilities (safe)
+// Player class from charStats.js utilizing th
+document.addEventListener('DOMContentLoaded', () => {
+    const name = localStorage.getItem('playerName') || 'Guest';
+
+    player = new Player(name);
+
+    const userStats = document.getElementById('userStats');
+
+    player.showStats(userStats);
+});
+
+// Game utilities
 window.gameTime = window.gameTime || { reset: () => {}, start: () => {} };
 window.fumbler = window.fumbler || { validCounter: () => {} };
+window.VALID_PAIRS = [];
 
-// DOM elements (safe)
+// DOM elements
 const inputBox = document.getElementById('inputSection');
 const outputElement = document.getElementById('output');
 const randPairDis = document.getElementById('randomPairDisplay');
 const categoryDisplay = document.getElementById('categoryDisplay');
 const fumbleOutput = document.getElementById('fumbleDisplay');
+
+fumbler.showFumbles(fumbleOutput);
+
+function showName(player) {
+    if (userStats) {
+        userStats.innerHTML = `Player: ${player.name} <br> Fumbles: ${player.fumbles}`;
+    }
+}
 
 function showDialogue(message) {
     const dialogBox = document.getElementById('dialogBox');
@@ -87,8 +82,21 @@ function nextPair() {
     }
     window.currentRoundPair = newPair;
     if (randPairDis) randPairDis.textContent = `"${newPair}" is your pair!`;
-    gameTime.start();
+    
+
+    if (round.turnCount === 0 ){
+
+        if (round.roundCount === 0){
+            round.startFirstRound();
+        } else { 
+            round.startNextRound();
+        }
+    } else {
+        round.startNextTurn();
+    }
+
 }
+
 
 function validReset() {
     const wordInput = document.getElementById('wordInput');
@@ -110,7 +118,7 @@ function cleanUserInput(input, pair, affixType) {
     return cleanInput;
 }
 
-// 🔥 MAIN GAME LOGIC - Submit handler
+//Submit handler
 document.addEventListener('click', async (e) => {
     if (e.target.id !== 'wordSent') return;
     
@@ -151,7 +159,7 @@ document.addEventListener('click', async (e) => {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${finalWord}`);
         if (!response.ok) {
             if (outputElement) outputElement.textContent = `"${finalWord}" is not a real word!`;
-            window.user.handleFumble(true);
+            fumbler.handleFumble(true);
             validReset();
             if (wordInput) wordInput.disabled = false;
             return;
@@ -159,25 +167,31 @@ document.addEventListener('click', async (e) => {
 
         const data = await response.json();
         const partsOfSpeech = getPartsOfSpeech(data);
-        
-        if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Valid!`;
-        gameTime.pause();
-        gameTime.reset();
-        fumbler.validCounter();
 
-        const isCorrectCategory = partsOfSpeech.some(pos => 
-            pos.toLowerCase().includes(window.currentCategory.toLowerCase())
-        );
+        const uniquePOS = [...new Set(partsOfSpeech.map(p => p.toLowerCase()))]; 
+        const isCorrectCategory =
+            uniquePOS.length === 1 &&
+            uniquePOS[0] === window.currentCategory.toLowerCase();
 
         const categoryOutput = document.getElementById('categoryOutput');
-        if (categoryOutput) {
-            categoryOutput.textContent = isCorrectCategory 
-                ? `"${finalWord}" is perfect ${window.currentCategory}!`
-                : `"${finalWord}" valid - advancing!`;
+
+        if (isCorrectCategory) {
+            if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Perfect!`;
+            round.playerAttacks();
+            fumbler.validCounter();
+
+        } else {
+            if (outputElement) outputElement.textContent = `"${finalWord}" is correct but wrong category!` ;
+            if (categoryOutput) {
+                categoryOutput.textContent = `"${finalWord}" is NOT a ${window.currentCategory}!`;
+            }
+            fumbler.handleFumble(true);
         }
 
+        // ALWAYS continue game loop
         nextPair();
         validReset();
+        if (wordInput) wordInput.disabled = false;
         
     } catch (error) {
         console.error('API Error:', error);
@@ -186,6 +200,7 @@ document.addEventListener('click', async (e) => {
         if (wordInput) wordInput.disabled = false;
     }
 });
+
 
 // Initialize game from menu
 document.addEventListener('DOMContentLoaded', () => {
@@ -205,7 +220,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Fumble display
 setInterval(() => {
-    if (fumbleOutput) fumbleOutput.textContent = `Fumbles: ${window.user.fumbles}`;
+    if (fumbleOutput) fumbleOutput.textContent = `Fumbles: ${fumbler.fumbles}`;
 }, 1000);
-
-console.log('randowrd.js loaded');

@@ -12,3 +12,9 @@ playBtn.addEventListener("click", (e) => {
   e.preventDefault();
   subMenu.classList.toggle("open");
 });
+
+submitUsername.addEventListener('click', () => {
+    const username = usernameInput.value.trim() || 'Guest';
+
+    localStorage.setItem('playerName', username);
+});
