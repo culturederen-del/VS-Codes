@@ -231,7 +231,7 @@ class testingRound {
 
     startFirstRound() {
         this.roundCount++;
-        gameTime.start();
+        //gameTime.start();
         showGameOutput();
         spawnEnemy();
     }

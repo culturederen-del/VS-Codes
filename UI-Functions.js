@@ -3,20 +3,27 @@ const optButtons = document.getElementById('optButtons');
 const attackOpt = document.getElementById('attackOpt');
 const optClose = document.getElementById('optClose');
 const gameOverPopup = document.querySelector('.gameOverPopUp');
-
-
+const actBtns = document.querySelectorAll('.actionBtn');
+const runBtn = document.getElementById('runOpt');
 
 // Attack opens optButtons
 attackOpt.onclick = (e) => {
     e.stopPropagation();
     optButtons.classList.remove("hidden");
+
+    actBtns.forEach(btn => {
+        btn.style.display = "none";
+    });
+    runBtn.style.display = "none";
 };
 
 // Close optButtons
 optClose.onclick = (e) => {
     e.stopPropagation();
     optButtons.classList.add("hidden");
-    if (typeof gameTime !== 'undefined') gameTime.start();
+        actBtns.forEach(btn => {
+        btn.style.display = "flex";
+    });
 };
 
 // Click outside to close
@@ -38,7 +45,7 @@ optfixes.addEventListener("click", (event) => {
     
     // Enable input (your original code)
     document.getElementById('wordInput').disabled = false;
-    document.getElementById('output').textContent = `Affix: ${btn.textContent}. Enter word:`;
+    document.getElementById('output').textContent = `Affix: ${btn.textContent}.`;
     
     // Show input section
     document.getElementById('inputSection').style.opacity = '1';

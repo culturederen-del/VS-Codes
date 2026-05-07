@@ -22,6 +22,7 @@ const inputBox = document.getElementById('inputSection');
 const outputElement = document.getElementById('output');
 const randPairDis = document.getElementById('randomPairDisplay');
 const categoryDisplay = document.getElementById('categoryDisplay');
+const categoryResult = document.getElementById('categoryResult');
 const fumbleOutput = document.getElementById('fumbleDisplay');
 
 fumbler.showFumbles(fumbleOutput);
@@ -32,18 +33,26 @@ function showName(player) {
     }
 }
 
+
 function showDialogue(message) {
     const dialogBox = document.getElementById('dialogBox');
     const dialogText = document.getElementById('dialogText');
+
     if (!dialogBox || !dialogText) return;
+
     dialogText.textContent = message;
-    dialogBox.style.display = 'block';
+
+    // IMPORTANT: match your CSS layout
+    dialogBox.style.display = 'flex';
+
     const closeIt = () => {
         dialogBox.style.display = 'none';
-        document.removeEventListener('keydown', closeIt);
+        dialogBox.removeEventListener('click', closeIt);
     };
-    document.addEventListener('keydown', closeIt);
+
+    dialogBox.addEventListener('click', closeIt);
 }
+
 
 function getPartsOfSpeech(data) {
     return data.flatMap(entry => entry.meanings.map(m => m.partOfSpeech));
@@ -118,6 +127,17 @@ function cleanUserInput(input, pair, affixType) {
     return cleanInput;
 }
 
+//This progresses the game for each loop
+function continueGameFlow(wordInput) {
+    setTimeout(() => {
+        if (categoryResult) categoryResult.textContent = "";
+        nextPair();
+        validReset();
+        if (wordInput) wordInput.disabled = false;
+    }, 1200);
+}
+
+
 //Submit handler
 document.addEventListener('click', async (e) => {
     if (e.target.id !== 'wordSent') return;
@@ -170,10 +190,9 @@ document.addEventListener('click', async (e) => {
 
         const uniquePOS = [...new Set(partsOfSpeech.map(p => p.toLowerCase()))]; 
         const isCorrectCategory =
-            uniquePOS.length === 1 &&
+            uniquePOS.length === 2 &&
             uniquePOS[0] === window.currentCategory.toLowerCase();
 
-        const categoryOutput = document.getElementById('categoryOutput');
 
         if (isCorrectCategory) {
             if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Perfect!`;
@@ -182,16 +201,13 @@ document.addEventListener('click', async (e) => {
 
         } else {
             if (outputElement) outputElement.textContent = `"${finalWord}" is correct but wrong category!` ;
-            if (categoryOutput) {
-                categoryOutput.textContent = `"${finalWord}" is NOT a ${window.currentCategory}!`;
+            if (categoryResult) {
+                categoryResult.textContent = `"${finalWord}" is NOT a ${window.currentCategory}!`;
             }
             fumbler.handleFumble(true);
         }
 
-        // ALWAYS continue game loop
-        nextPair();
-        validReset();
-        if (wordInput) wordInput.disabled = false;
+continueGameFlow(wordInput);
         
     } catch (error) {
         console.error('API Error:', error);
@@ -205,17 +221,24 @@ document.addEventListener('click', async (e) => {
 // Initialize game from menu
 document.addEventListener('DOMContentLoaded', () => {
     const savedCategory = sessionStorage.getItem('selectedCategory');
-    if (savedCategory) {
-        window.currentCategory = savedCategory;
-        setupCategory(savedCategory);
-        nextPair();
-        if (categoryDisplay) categoryDisplay.textContent = `Category: ${savedCategory}`;
-        if (outputElement) outputElement.textContent = 'ATTACK for affix options!';
-        sessionStorage.removeItem('selectedCategory');
-        console.log('Game started with:', savedCategory);
-        return;
+
+    if (!savedCategory) return;
+
+    window.currentCategory = savedCategory;
+
+    setupCategory(savedCategory);
+    nextPair();
+
+    requestAnimationFrame(() => {
+        const el = document.getElementById('categoryDisplay');
+        if (el) el.textContent = `Category: ${window.currentCategory}`;
+    });
+
+    if (outputElement) {
+        outputElement.textContent = 'ATTACK for affix options!';
     }
-    if (outputElement) outputElement.textContent = 'Select category from menu!';
+
+    sessionStorage.removeItem('selectedCategory');
 });
 
 // Fumble display

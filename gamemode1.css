@@ -5,7 +5,106 @@ body {
     font-size: 30px;
     background-color: #f0f0f0;
     margin: 0;
-    padding: 20px;
+    
+  
+}
+
+#upperGameDisplay{
+  background-color: #f0f0f0ce;
+  font-size: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px; /* adds space so text isn't hugging the line */
+}
+
+.userStateHUD{
+  flex-direction: column;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+#currentEnemyStateHud{
+  display: flex;
+  justify-content: flex-end;
+align-content: flex-start;
+}
+
+.timerDesign{
+  font-size: 50px;
+}
+
+.battleArena{
+  position: relative;
+  align-items: center;
+
+}
+
+.bgArenaDisplay {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    object-fit: cover;
+
+    z-index: -1;
+}
+
+.inputOutputs{
+  font-size: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 15px;
+  margin-left: 2vw;
+  margin-top: 2vh;
+  position: fixed;
+  z-index: 10;
+  background-color: aliceblue;
+}
+
+
+.optionsUI{
+  margin-top: 37.9%;
+    position: relative;
+    bottom: 0;
+    left: 0;
+  
+    width: 97.4%;
+    padding-left: 50px;
+    display: flex;
+    align-items: center;
+    height: 10vh;
+    background: rgba(255, 255, 255, 0.774); /* or semi-transparent if you want */
+    border-top: 2px solid #333;
+
+    z-index: 10;
+}
+
+
+#dialogBox{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: white;
+  border-top: 2px solid #333;
+
+  display: none;
+  align-items: center;
+  padding-left: 40px;
+
+  box-sizing: border-box;
+  z-index: 20;
+  cursor: pointer;
 }
 
 
@@ -23,15 +122,15 @@ body {
   justify-content: center;
   align-items: center;
   display: flex;
-
-
 }
+
 
 .gameOverPopUp.active {
   z-index: 999;
   opacity: 1;
   pointer-events: all;
 }
+
 
 .gameOverDisplay{
   font-size: 20px;
@@ -48,6 +147,7 @@ body {
 
 }
 
+
 .gameOverReturn{
   display: flex;
 margin-top: auto;
@@ -61,6 +161,111 @@ height: 50px;
 align-items: center;
 justify-content: center;
 }
+
+
+#runOpt{
+
+  width: 200px;
+  background: #ececec;
+  font-size: 40px;
+  display: inline-block;
+  border: 5px solid transparent;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(#ececec, #ececec) padding-box,
+    linear-gradient(
+      180deg,
+      #ffa114,
+      #c57000
+    ) border-box;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+}
+
+
+.actionHUD{
+  display: flex;
+  flex-direction: row;
+}
+
+#runOpt,
+.actionBtn{
+
+  position: relative;
+
+  width: 200px;
+
+  font-size: 40px;
+  font-family: inherit;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  margin-right: 10px;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+  color: black;
+
+  border: 5px solid transparent;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(#ececec, #ececec) padding-box,
+    linear-gradient(
+      180deg,
+      #ffa114,
+      #b46b0b
+    ) border-box;
+}
+
+.actionBtn:active{
+  .actionBtn{
+    display: none;
+  }
+}
+
+
+#runOpt:hover, .actionBtn:hover {
+  border-radius: 10px;
+  background-color: #d6d6d6;
+  background:
+    linear-gradient(rgb(221, 221, 221), rgb(221, 221, 221)) padding-box,
+    linear-gradient(
+      180deg,
+      #33abfa,
+      #0238ac
+    ) border-box;
+
+  
+}
+
+
+@keyframes borderActive {
+  0% {
+  border-image: linear-gradient(
+  180deg,#1472ff 50%,#0238ac 50%) 1;
+  }
+
+  50%{
+  border-image: linear-gradient(
+  260deg,#1472ff 50%,#0238ac 50%) 1;
+  }
+
+  100%{
+  border-image: linear-gradient(
+  180deg,#1472ff 50%,#0238ac 50%) 1;
+  }
+
+}
+
 
 .optButtons {
   position: fixed;
@@ -76,6 +281,8 @@ justify-content: center;
 
   z-index: 99;
 }
+
+
 .optContent{
   background: white;
   border: 2px solid black;
@@ -86,11 +293,12 @@ justify-content: center;
 }
 
 #optClose{
-  position: absolute;
+  position: relative;
   top: 10px;
   right: 15px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 30px;
+  padding: -40px;
 }
 
 .hidden {
@@ -98,5 +306,4 @@ justify-content: center;
 }
 
 
-/* this is the bg: */
 
