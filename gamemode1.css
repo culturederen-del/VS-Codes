@@ -267,42 +267,89 @@ justify-content: center;
 }
 
 
-.optButtons {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(53, 45, 45, 0.5);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 99;
-}
-
-
-.optContent{
-  background: white;
-  border: 2px solid black;
-  padding: 20px;
-  width: 300px;
-  border-radius: 8px;
-  position: relative;
-}
-
-#optClose{
-  position: relative;
-  top: 10px;
-  right: 15px;
-  cursor: pointer;
-  font-size: 30px;
-  padding: -40px;
-}
-
-.hidden {
+#dialogBox {
+    position: fixed !important; 
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.8); 
+    border-top: none;  /* Remove border */
     display: none;
+    align-items: center;
+    justify-content: center; 
+    padding: 40px;
+    box-sizing: border-box;
+    z-index: 1000;  
+    cursor: pointer;
+}
+
+#dialogText {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    font-size: 28px;
+    max-width: 80%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+
+#dialogBox.feedback {
+    background: linear-gradient(45deg, #00ff8823, #00cc6625);
+    border: 3px solid #00aa55;
+}
+
+
+
+.optButtons {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(53, 45, 45, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;  /* Below dialogBox */
+    pointer-events: none;  /* Allow clicks through when hidden */
+}
+
+.optButtons:not(.hidden) {
+    pointer-events: auto;  /* Only block when visible */
+}
+
+.optContent {
+    background: white;
+    border: 2px solid black;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+    position: relative;
+    pointer-events: auto;  /* Buttons inside are clickable */
+}
+
+
+
+.actionHUD {
+    display: flex;
+    flex-direction: row;
+    pointer-events: auto;
+    z-index: 100;
+}
+
+
+.actionBtn, #runOpt {
+    position: relative;
+    pointer-events: auto !important;
+    z-index: 101;
+}
+
+/* FIX 4: Hidden class properly hides */
+.hidden {
+    display: none !important;
+    pointer-events: none !important;
 }
 
 

@@ -73,6 +73,7 @@ class enemy {
         const actualDamage = Math.max(Math.floor(damage - this.defense), 0);
         this.hp -= actualDamage;
         showDialogue(`${this.name} takes ${actualDamage} damage! HP left: ${this.hp}`);
+        dialogBox.classList.add('feedback');
         this.showEnemyStats(document.getElementById('currentEnemyStateHud')); // Update enemy stats before calculating damage
 
         if (this.hp <= 0) {

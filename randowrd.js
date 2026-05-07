@@ -34,23 +34,49 @@ function showName(player) {
 }
 
 
-function showDialogue(message) {
+function showDialogue(message, autoClose = true, delay = 1800, isDamage = true) {
     const dialogBox = document.getElementById('dialogBox');
     const dialogText = document.getElementById('dialogText');
 
     if (!dialogBox || !dialogText) return;
 
+    // Clear previous classes
+    dialogBox.className = '';
+    
+    // Style based on type
+    if (isDamage && message.includes('takes') || message.includes('damage')) {
+        dialogBox.classList.add('feedback');
+    } else if (message.includes('fainted') || message.includes('Critical')) {
+        dialogBox.classList.add('success');
+    }
+
     dialogText.textContent = message;
-
-    // IMPORTANT: match your CSS layout
     dialogBox.style.display = 'flex';
+    
+    // Block background
+    document.body.style.pointerEvents = 'none';
 
-    const closeIt = () => {
+    // Auto-close timer
+    const autoCloseTimer = setTimeout(() => {
+        closeDialog();
+    }, delay);
+
+    function closeDialog() {
+        document.body.style.pointerEvents = 'auto';
         dialogBox.style.display = 'none';
-        dialogBox.removeEventListener('click', closeIt);
-    };
+        dialogBox.className = '';
+        clearTimeout(autoCloseTimer);
+        dialogBox.removeEventListener('click', handleClick);
+    }
 
-    dialogBox.addEventListener('click', closeIt);
+    // Optional click-to-close (for non-auto-close messages)
+    if (!autoClose) {
+        dialogBox.addEventListener('click', handleClick);
+    }
+
+    function handleClick() {
+        closeDialog();
+    }
 }
 
 
@@ -81,9 +107,9 @@ function setupCategory(category) {
 
 function nextPair() {
     if (window.VALID_PAIRS.length === 0) {
-        setupCategory(window.currentCategory);
-        showDialogue("All pairs used! Reset complete.");
-    }
+    setupCategory(window.currentCategory);
+    showDialogue("All pairs used! Reset complete."); // No auto-close
+}
     const newPair = getRandomPair();
     if (!newPair) {
         if (randPairDis) randPairDis.textContent = "No pairs left!";
@@ -187,22 +213,18 @@ document.addEventListener('click', async (e) => {
 
         const data = await response.json();
         const partsOfSpeech = getPartsOfSpeech(data);
-
-        const uniquePOS = [...new Set(partsOfSpeech.map(p => p.toLowerCase()))]; 
-        const isCorrectCategory =
-            uniquePOS.length === 2 &&
-            uniquePOS[0] === window.currentCategory.toLowerCase();
-
+        const uniquePOS = [...new Set(partsOfSpeech.map(p => p.toLowerCase()))];
+        const targetCategory = window.currentCategory.toLowerCase();
+        const isCorrectCategory = uniquePOS.includes(targetCategory);
 
         if (isCorrectCategory) {
-            if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Perfect!`;
+            if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Perfect! (${uniquePOS.join(', ')})`;
             round.playerAttacks();
             fumbler.validCounter();
-
         } else {
-            if (outputElement) outputElement.textContent = `"${finalWord}" is correct but wrong category!` ;
+            if (outputElement) outputElement.textContent = `"${finalWord}" is correct but wrong category!`;
             if (categoryResult) {
-                categoryResult.textContent = `"${finalWord}" is NOT a ${window.currentCategory}!`;
+                categoryResult.textContent = `"${finalWord}" has: ${uniquePOS.join(', ')} (need: ${targetCategory})`;
             }
             fumbler.handleFumble(true);
         }
