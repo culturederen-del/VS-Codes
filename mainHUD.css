@@ -8,15 +8,18 @@ body, html{
   height: 100%;
 }
 
+
 body{
 
   overflow: hidden;
 }
 
+
 :root{
   --btn-bg-active-1: rgba(27, 27, 27, 0.877);
   --btn-bg-active-2: rgba(33, 33, 33, 0.877);
 }
+
 
 .whole img {
   position: absolute;
@@ -28,6 +31,7 @@ body{
   object-fit: contain;
   z-index: 0;
 }
+
 
 .catSubMenu {
   position: absolute;
@@ -59,6 +63,7 @@ body{
   opacity: 1;
 }
 
+
 .whole button {
   position: absolute;
   inset: 0;
@@ -73,6 +78,7 @@ body{
   z-index: 1;
 }
 
+
 .nameContainer{
   margin: 0px;
   display: flex;
@@ -83,12 +89,14 @@ body{
 
 }
 
+
 .ep{
   width: 70px;
   height: 70px;
   border-radius: 100%;
   background-color: #868686;
 }
+
 
 .nameBox{
   display: flex;
@@ -101,14 +109,17 @@ body{
   height: 100px;
 }
 
+
 .nameTexts{
   font-size: 30px ;
 
 }
 
+
 .nameInputs{
   padding-bottom: 10px;
 }
+
 
 .gameTitle{
   font-weight: bolder;
@@ -137,6 +148,7 @@ body{
   align-items: stretch; 
 }
 
+
 .mainNavBtn {
     border-radius: 30px;
   width: 500px;
@@ -157,14 +169,17 @@ body{
   color: var(--txt-base);
 }
 
+
 .mainNavBtn:hover {
   background-color: #333;
   color: #fff;
 }
 
+
 .mainNavBtn:hover span {
   animation: arrow-pulse 0.5s ease-in-out infinite alternate;
 }
+
 
 @keyframes arrow-pulse {
   0% {
@@ -175,6 +190,7 @@ body{
   }
 }
 
+
 .mainNavBtn:active {
   animation: ease-in-out 0.5s active-press;
   background-image: repeating-linear-gradient(-45deg, var(--btn-bg-active-1), var(--btn-bg-active-1) 8px, var(--btn-bg-active-2) 8px, var(--btn-bg-active-2) 16px);
@@ -183,6 +199,7 @@ body{
   padding-left: 24px;
 
 }
+
 
 .nounAnim, .verbAnim, .adjAnim, .advAnim, .prnAnim {
     font-size: 2.25em;
@@ -197,6 +214,8 @@ body{
     align-self: center;
 
 }
+
+
 .defaultImg {
     width: 10%;
     height: 20%;
@@ -455,8 +474,6 @@ display:flex;
 
 }
 
-
-
 .char:nth-child(2) { animation-delay: 1.0s; }
 .char:nth-child(3) { animation-delay: 1.3s; }
 .char:nth-child(4) { animation-delay: 1.4s; }
@@ -467,6 +484,8 @@ display:flex;
 .char:nth-child(9) { animation-delay: 1.9s; }
 .char:nth-child(10) { animation-delay: 2s; }
 .char:nth-child(11) { animation-delay: 2.1s }
+
+
 
 @keyframes opacities {
 0% {
@@ -480,6 +499,7 @@ display:flex;
 }
   
 }
+
 
 @keyframes first-char-rotate {
   0% {
@@ -496,6 +516,7 @@ display:flex;
   }
 }
 
+
 @keyframes first-char-transform {
   0% {
     transform: translateX(calc(.75ch * var(--char-total))) translateY(80%);
@@ -511,11 +532,13 @@ display:flex;
   }
 }
 
+
 @keyframes char-rotate {
   0% { transform: rotate(30deg); } 
   30% { transform: rotate(-10deg); }
   100% { transform: rotate(0deg); }
 }
+
 
 @keyframes char-transform {
   0% { opacity: 0; color: white; transform: translateY(50%); }

@@ -5,6 +5,8 @@ const optClose = document.getElementById('optClose');
 const gameOverPopup = document.querySelector('.gameOverPopUp');
 const actBtns = document.querySelectorAll('.actionBtn');
 const runBtn = document.getElementById('runOpt');
+const takeDmgFX = document.getElementById('damageTint');
+let damageTimeout;
 
 // Attack opens optButtons
 attackOpt.onclick = (e) => {
@@ -24,7 +26,24 @@ optClose.onclick = (e) => {
         actBtns.forEach(btn => {
         btn.style.display = "flex";
     });
+        runBtn.style.display = "flex";
 };
+
+
+
+
+function damageFX() {
+    if (!takeDmgFX) return;
+
+    takeDmgFX.classList.add("active");
+
+    clearTimeout(damageTimeout);
+
+    damageTimeout = setTimeout(() => {
+        takeDmgFX.classList.remove("active");
+    }, 350);
+}
+
 
 // Click outside to close
 document.body.addEventListener("click", (e) => {
@@ -45,7 +64,7 @@ optfixes.addEventListener("click", (event) => {
     
     // Enable input (your original code)
     document.getElementById('wordInput').disabled = false;
-    document.getElementById('output').textContent = `Affix: ${btn.textContent}.`;
+    document.getElementById('output').textContent = `Move Type: ${btn.textContent}`;
     
     // Show input section
     document.getElementById('inputSection').style.opacity = '1';

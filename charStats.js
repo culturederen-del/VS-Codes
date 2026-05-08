@@ -1,45 +1,52 @@
 let characters = [
     { name: "Jake the Jolly",
-        hp: 21,
+        hp: 210,
         dmg: 1,
-        critChance: 0.1, // 10% chance for critical hit
+        critChance: 0.9, // 90% chance for critical hit
         dodgeChance: 0.05, // 5% chance to dodge an attack
-        defense: 5
+        defense: 30
     },
     { name: "Jieben the Reyes",
-        hp: 10,
+        hp: 100,
         dmg: 20,
         critChance: 0.75, // 75% chance for critical hit
-        dodgeChance: 0.40, // 40% chance to dodge an attack
+        dodgeChance: 0.4, // 40% chance to dodge an attack
         defense: 5
     },
     { name: "Jerwin the Faithful",
-        hp: 18,
+        hp: 180,
         dmg: 20,
         critChance: 0.15, // 15% chance for critical hit
-        dodgeChance: 0.10, // 15% chance to dodge an attack
+        dodgeChance: 0.10, // 10% chance to dodge an attack
         defense: 15
     },  
     { name: "Nash the Atencion",
-        hp: 20,
+        hp: 200,
         dmg: 15,
         critChance: 0.25, // 25% chance for critical hit
         dodgeChance: 0.15, // 15% chance to dodge an attack
         defense: 10
     },  
     { name: "Zedrick the Valiant God",
-        hp: 55,
+        hp: 550,
         dmg: 35,
-        critChance: 0.2, // 20% chance for critical hit
+        critChance: 0.1, // 10% chance for critical hit
         dodgeChance: 0.05, // 5% chance to dodge an attack
         defense: 20
     },
-    { name: "Marvien the Milk Store",
-        hp: 17,
+    { name: "Marvien Le'Bronja",
+        hp: 170,
         dmg: 15,
         critChance: 0.15,
-        dodgeChance: 0.8,
+        dodgeChance: 0.8, //80% dodge chance
         defense: 0
+    },
+    { name: "Adonnis the Swole",
+        hp: 230,
+        dmg: 30,
+        critCharnce: 0.20,
+        dodgeChance: 0.15,
+        defense: 15
     }
 ]
 
@@ -136,6 +143,7 @@ class Player {
     takeDamage(damage) {
         const actualDamage = Math.max(Math.floor(damage - this.defense), 0);
         this.hp -= actualDamage;
+        damageFX();
         showDialogue(`${this.name} takes ${actualDamage} damage! HP left: ${this.hp}`);
         this.showStats(userStats);
     }

@@ -9,6 +9,7 @@ class fumblingSystem {
         if (invalid) {
             this.fumbles--;
             this.validReset();
+            fumbleOutput.classList.add('wrong');
             console.log(`Fumble! Remaining: ${this.fumbles}`);
         }
     }

@@ -1,7 +1,6 @@
 // Use 'const' globals + check if already defined
 // Only define if not already defined
 
-// Player class from charStats.js utilizing th
 document.addEventListener('DOMContentLoaded', () => {
     const name = localStorage.getItem('playerName') || 'Guest';
 
@@ -95,7 +94,9 @@ function getRandomPair() {
 function setupCategory(category) {
     window.VALID_PAIRS.length = 0;
     const pairs = {
-        noun: ["AN","EN","IN","ON","UN","BA","BE","BO","CA","CO","DE","DO","FA","FO","GA","GO","HA","HE","HI","HO","LA","LE","LO","MA","ME","MI","MO","NA","NE","NO","PA","PE","PO","RA","RE","RO","SA","SE","SO","TA","TE","TO"],
+        noun: ["AN","EN","IN","ON","UN","BA","BE","BO","CA","CO","DE","DO","FA","FO","GA",
+            "GO","HA","HE","HI","HO","LA","LE","LO","MA","ME","MI","MO","NA","NE","NO","PA",
+            "PE","PO","RA","RE","RO","SA","SE","SO","TA","TE","TO"],
         adjective: ["AD","ED","BE","CO","DE","EX","IM","IN","IR","OB","RE","SE","UN"],
         verb: ["RE","UN","IN","AD","BE","DE","EN","EX","IM","OB","UP","ON","OUT"],
         adverb: ["AD","ED","IN","UN","RE","UP","ON","OUT","OV","AL","BE"],
@@ -116,7 +117,7 @@ function nextPair() {
         return;
     }
     window.currentRoundPair = newPair;
-    if (randPairDis) randPairDis.textContent = `"${newPair}" is your pair!`;
+    if (randPairDis) randPairDis.textContent = `  "${newPair}" is your pair!`;
     
 
     if (round.turnCount === 0 ){
@@ -180,7 +181,7 @@ document.addEventListener('click', async (e) => {
         return;
     }
     if (!wordValue || !/^[A-Z]+$/.test(wordValue) || wordValue.length < 3) {
-        if (outputElement) outputElement.textContent = "Enter valid word (3+ letters)!";
+        if (outputElement) outputElement.textContent = "Enter valid word!";
         return;
     }
 
@@ -204,7 +205,7 @@ document.addEventListener('click', async (e) => {
     try {
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${finalWord}`);
         if (!response.ok) {
-            if (outputElement) outputElement.textContent = `"${finalWord}" is not a real word!`;
+            if (outputElement) outputElement.textContent = `"${finalWord}" isn't a word!`;
             fumbler.handleFumble(true);
             validReset();
             if (wordInput) wordInput.disabled = false;
@@ -218,7 +219,7 @@ document.addEventListener('click', async (e) => {
         const isCorrectCategory = uniquePOS.includes(targetCategory);
 
         if (isCorrectCategory) {
-            if (outputElement) outputElement.textContent = `"${finalWord}" ✓ Perfect! (${uniquePOS.join(', ')})`;
+            if (outputElement) outputElement.textContent = `"${finalWord}" Perfect! (${uniquePOS.join(', ')})`;
             round.playerAttacks();
             fumbler.validCounter();
         } else {
@@ -229,8 +230,10 @@ document.addEventListener('click', async (e) => {
             fumbler.handleFumble(true);
         }
 
+// continues function loops
 continueGameFlow(wordInput);
         
+
     } catch (error) {
         console.error('API Error:', error);
         if (outputElement) outputElement.textContent = 'Network error - retry!';
@@ -265,5 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Fumble display
 setInterval(() => {
-    if (fumbleOutput) fumbleOutput.textContent = `Fumbles: ${fumbler.fumbles}`;
+
+    let hearts = "";
+    for(let i = 0; i < fumbler.fumbles; i++){
+    hearts += `<span class="heart">♥</span>`;
+    }
+    document.getElementById("fumbleDisplay").innerHTML = "Fumbles: " + hearts;
+
 }, 1000);

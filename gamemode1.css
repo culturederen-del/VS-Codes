@@ -5,12 +5,14 @@ body {
     font-size: 30px;
     background-color: #f0f0f0;
     margin: 0;
-    
-  
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
+
 #upperGameDisplay{
-  background-color: #f0f0f0ce;
+  color: aliceblue;
+  background-color: #313131ee;
   font-size: 40px;
   padding-left: 30px;
   padding-right: 30px;
@@ -21,7 +23,25 @@ body {
   padding-bottom: 5px; /* adds space so text isn't hugging the line */
 }
 
+
+.heart{
+  font-size: 45px;
+  color: red;
+}
+
+
+.icon{
+  position: fixed;
+  margin-top: 15px;
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  background-color: #8d8d8d;
+  border: #ffad14 1px solid;
+}
+
 .userStateHUD{
+  margin-left: 100px;
   flex-direction: column;
   display: flex;
   justify-content: flex-start;
@@ -57,8 +77,31 @@ align-content: flex-start;
     z-index: -1;
 }
 
+#damageTint{
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.521);
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+}
+
+#damageTint.active{
+  opacity: 1;
+}
+
+
+@keyframes rotate {
+	100% {
+		transform: rotate(0.5turn);
+	}
+}
+
+
 .inputOutputs{
+  display: flex;
+  flex-direction: column;
   font-size: 25px;
+  width: 260px;
   padding-left: 20px;
   padding-right: 20px;
   border-radius: 15px;
@@ -67,6 +110,129 @@ align-content: flex-start;
   position: fixed;
   z-index: 10;
   background-color: aliceblue;
+  overflow: hidden;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.inputOutputs::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-repeat: no-repeat;
+  background-size: 50% 50%, 50% 50%;
+  background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  background-image: linear-gradient( #c57000c7, #fbb300), linear-gradient(#c57000,#fbb300), 
+  linear-gradient(#33abfa,#0238ac), linear-gradient(#0238ac8f, #33abfa);
+  animation: rotate 5s linear infinite;
+  opacity: 0;
+    transition: opacity 1s ease;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.inputOutputs:focus-within::before{
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+
+
+.inputOutputs::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 6px;
+  top: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  background: white;
+  border-radius: 10px;
+}
+
+
+.inputOutputs h2{
+  margin: 0;
+}
+
+
+#wordInput{
+  height: 2.5em;
+  width: 15.5em;
+  outline: none;
+  overflow: hidden;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+  border: 2px solid rgb(255, 219, 166);
+  padding-left: 1em;
+}
+
+
+#wordInput:focus, #wordInput:hover {
+  border: 2px solid #4a9dec;
+  box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+  background-color: white;
+}
+
+#randomPairDisplay{
+  margin-left: 15px;
+}
+
+
+#fumbleDisplay{
+  font-size: 50px;
+
+}
+
+#fumbleDisplay.wrong{
+animation: shake 0.3s ease-out;
+
+}
+
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+
+#wordSent{
+  display: flex;
+  align-items: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  margin-left: 71%;
+  border-radius: 5px;
+  border: 2px solid rgb(223, 135, 3);
+}
+
+/* #0238ac8f, #33abfa */
+#wordSent:hover{
+  
+  border: 2px solid rgb(223, 135, 3);
+  background-color: rgb(223, 135, 3);
+  color: aliceblue;
+  transition: all cubic-bezier(.38,1.17,1,.9) 0.5s;
+
 }
 
 
@@ -163,6 +329,22 @@ justify-content: center;
 }
 
 
+#attackOpt:hover{
+color: rgb(255, 44, 44);
+}
+
+#defendOpt:hover{
+color: rgb(75, 165, 75);
+}
+
+#itemOpt:hover{
+color: rgb(105, 68, 240);
+
+}
+#runOpt:hover{
+  color:rgb(172, 12, 105);
+}
+
 #runOpt{
 
   width: 200px;
@@ -190,6 +372,7 @@ justify-content: center;
   display: flex;
   flex-direction: row;
 }
+
 
 #runOpt,
 .actionBtn{
@@ -235,7 +418,7 @@ justify-content: center;
 
 #runOpt:hover, .actionBtn:hover {
   border-radius: 10px;
-  background-color: #d6d6d6;
+
   background:
     linear-gradient(rgb(221, 221, 221), rgb(221, 221, 221)) padding-box,
     linear-gradient(
@@ -267,6 +450,8 @@ justify-content: center;
 }
 
 
+
+
 #dialogBox {
     position: fixed !important; 
     top: 0 !important;
@@ -274,7 +459,7 @@ justify-content: center;
     width: 100vw !important;
     height: 100vh !important;
     background: rgba(0, 0, 0, 0.8); 
-    border-top: none;  /* Remove border */
+    border-top: none;
     display: none;
     align-items: center;
     justify-content: center; 
@@ -296,9 +481,10 @@ justify-content: center;
 
 
 #dialogBox.feedback {
-    background: linear-gradient(45deg, #00ff8823, #00cc6625);
     border: 3px solid #00aa55;
 }
+
+
 
 
 
@@ -321,16 +507,67 @@ justify-content: center;
 }
 
 .optContent {
-    background: white;
+    background: aliceblue;
     border: 2px solid black;
     padding: 20px;
-    width: 300px;
+    height: 5vh;
+    width: 25vw;
     border-radius: 8px;
     position: relative;
     pointer-events: auto;  /* Buttons inside are clickable */
 }
 
+.typeBtn{
+  font-family: "Dongle", sans-serif;
+  width: 120px;
+  height: 45px;
+  margin-left: 15px;
+  background: aliceblue;
+  color: #333;
+  border-radius: 15px;
+  border-color: aliceblue;
+  cursor: pointer;
+  font-size: 30px;
+  transition: all 0.5s ease;
+  border-top: 2px solid #c2c2c2;
+  border-left: 2px solid #c2c2c2;
 
+  border-bottom: 2px solid #8a8a8a;
+  border-right: 2px solid #8a8a8a;
+}
+
+#PhysOpt:hover, #MentOpt:hover, #AstralOpt:hover{
+  color: aliceblue;
+  transform: scale(1.03);
+  box-shadow: inset 2px 2px 2px 2px rgba(39, 39, 39, 0.459);
+}
+
+#PhysOpt:hover{
+  background-color: rgb(255, 95, 95);
+}
+
+#MentOpt:hover{
+  background-color: #2bbe64;
+}
+
+#AstralOpt:hover{
+  background-color: #4a9dec;
+}
+
+.closeTypes{
+  width: 40px;
+  height: 40px;
+  margin-left: 15px;
+  border-radius: 20px;
+  transition: all 0.5 ease;
+}
+
+.closeTypes:hover{
+background-color: #333;
+color: aliceblue;
+  transition: all 0.5 ease;
+  border-color: aliceblue;
+}
 
 .actionHUD {
     display: flex;
