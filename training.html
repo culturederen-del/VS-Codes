@@ -53,6 +53,8 @@
 
 
 
+
+
 <div class="gameOverPopUp"> 
     <div class="gameOverDisplay">
         <div class="gameOverResponse">
@@ -65,9 +67,11 @@
         <a href="mainHUD.html" class="gameOverReturn"> Go Back</a>
     </div>
 </div>
+<img class="enemySprite" src="imgRes/EnemySprite1.png">
+<div class="enemyShadow"></div>
 
-
-
+<img class="userSprite" src="imgRes/UserSprite1.png">
+<div class="userShadow"></div>
 <div class="optionsUI" id="optUi"> 
     <h2 id="categoryResult"></h2>
     <div id="mainOpt" class="actionHUD">
@@ -76,7 +80,7 @@
         <button class="actionBtn" id="itemOpt">Item</button>
         <a id="runOpt" class="exitButton" href="mainHUD.html">Run</a>
 
-        <div id="optButtons" class="optButtons">
+        <div id="optButtons" class="optButtons hidden">
             <div class="optContent">
                 <button class="typeBtn" id="PhysOpt">Prefix</button>
                 <button class="typeBtn" id="MentOpt">Infix</button> 

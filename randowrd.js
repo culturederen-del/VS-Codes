@@ -83,6 +83,7 @@ function getPartsOfSpeech(data) {
     return data.flatMap(entry => entry.meanings.map(m => m.partOfSpeech));
 }
 
+
 function getRandomPair() {
     if (window.VALID_PAIRS.length === 0) return null;
     const idx = Math.floor(Math.random() * window.VALID_PAIRS.length);
@@ -90,6 +91,7 @@ function getRandomPair() {
     window.VALID_PAIRS.splice(idx, 1);
     return pair;
 }
+
 
 function setupCategory(category) {
     window.VALID_PAIRS.length = 0;
@@ -105,6 +107,7 @@ function setupCategory(category) {
     window.VALID_PAIRS.push(...(pairs[category] || []));
     window.currentRoundPair = getRandomPair();
 }
+
 
 function nextPair() {
     if (window.VALID_PAIRS.length === 0) {
@@ -145,6 +148,7 @@ function validReset() {
     window.gameState = 'selectAffix';
 }
 
+
 function cleanUserInput(input, pair, affixType) {
     let cleanInput = input.toUpperCase();
     switch (affixType) {
@@ -153,6 +157,7 @@ function cleanUserInput(input, pair, affixType) {
     }
     return cleanInput;
 }
+
 
 //This progresses the game for each loop
 function continueGameFlow(wordInput) {

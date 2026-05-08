@@ -77,6 +77,49 @@ align-content: flex-start;
     z-index: -1;
 }
 
+.enemySprite{
+  width: 350px;
+  margin-top: 10vh;
+  margin-left: 60vw;
+  position: absolute;
+}
+
+.enemyShadow{
+  margin-top: 42vh;
+  margin-left: 63vw;
+  position: absolute;
+  width: 250px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: #00000088;
+
+}
+
+.userSprite{
+  width: 450px;
+  margin-top: 25vh;
+  margin-left: 10vw;
+  position: absolute;
+}
+
+.userSprite{
+  width: 450px;
+  margin-top: 25vh;
+  margin-left: 10vw;
+  position: absolute;
+}
+
+.userShadow{
+  margin-top: 65.5vh;
+  margin-left: 15.5vw;
+  position: absolute;
+  width: 250px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: #00000088;
+
+}
+
 #damageTint{
   position: absolute;
   background-color: rgba(255, 0, 0, 0.521);
@@ -495,15 +538,15 @@ color: rgb(105, 68, 240);
     width: 100%;
     height: 100%;
     background: rgba(53, 45, 45, 0.5);
-    display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;  /* Below dialogBox */
-    pointer-events: none;  /* Allow clicks through when hidden */
+    z-index: 999;
+    display: none;
 }
 
 .optButtons:not(.hidden) {
     pointer-events: auto;  /* Only block when visible */
+    display: flex;
 }
 
 .optContent {
@@ -515,6 +558,7 @@ color: rgb(105, 68, 240);
     border-radius: 8px;
     position: relative;
     pointer-events: auto;  /* Buttons inside are clickable */
+    
 }
 
 .typeBtn{
